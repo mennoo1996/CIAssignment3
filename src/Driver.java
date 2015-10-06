@@ -1,3 +1,4 @@
+import java.util.Stack;
 
 public class Driver {
 	
@@ -19,14 +20,7 @@ public class Driver {
 		System.out.println("Hello World");
 		System.out.println("Yoooooooooooo");
 		
-		Stack<Integer> a = new Stack<Integer>();
-		a.push(1);
-		a.push(2);
-		System.out.println(a.top());
-		a.pop();
-		System.out.println(a.top());
-		a.pop();
-		a.pop();
+	
 	}
 
 }
