@@ -9,6 +9,7 @@ public class Driver {
 	public static final double EVAPORATION = 0.5;
 	public static final double CONVERGENCE_CRITERIA = 1;
 	
+	// Starting and ending point variables
 	public static final int STARTING_X = 0;
 	public static final int STARTING_Y = 0;
 	public static final int ENDING_X = 50;
@@ -18,8 +19,14 @@ public class Driver {
 		System.out.println("Hello World");
 		System.out.println("Yoooooooooooo");
 		
-		//Bla
-
+		Stack<Integer> a = new Stack<Integer>();
+		a.push(1);
+		a.push(2);
+		System.out.println(a.top());
+		a.pop();
+		System.out.println(a.top());
+		a.pop();
+		a.pop();
 	}
 
 }
