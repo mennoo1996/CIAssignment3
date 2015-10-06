@@ -1,53 +1,27 @@
 package com.ci.group20.maze;
 
+import com.ci.group20.util.Coordinate;
+
 /**
  * A maze.
  */
 public class Maze {
     private final boolean[][] cells;
-    private int startX;
-    private int startY;
-    private int endX;
-    private int endY;
+    private Coordinate start;
+    private Coordinate end;
 
-    public Maze(final boolean[][] cells, int startX, int startY, int endX, int endY) {
-        this.startX = startX;
-        this.startY = startY;
-        this.endX = endX;
-        this.endY = endY;
+    public Maze(final boolean[][] cells, Coordinate start, Coordinate end) {
+        this.start = start;
+        this.end = end;
         this.cells = cells;
     }
 
-    public int getStartX() {
-        return startX;
+    public void setStart(Coordinate start) {
+        this.start = start;
     }
 
-    public void setStartX(int startX) {
-        this.startX = startX;
-    }
-
-    public int getStartY() {
-        return startY;
-    }
-
-    public void setStartY(int startY) {
-        this.startY = startY;
-    }
-
-    public int getEndX() {
-        return endX;
-    }
-
-    public void setEndX(int endX) {
-        this.endX = endX;
-    }
-
-    public int getEndY() {
-        return endY;
-    }
-
-    public void setEndY(int endY) {
-        this.endY = endY;
+    public void setEnd(Coordinate end) {
+        this.end = end;
     }
 
     public boolean isCellAccessible(int x, int y) {

@@ -1,5 +1,7 @@
 package com.ci.group20.maze;
 
+import com.ci.group20.util.Coordinate;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -57,12 +59,14 @@ public class MazeParser {
             String[] startingCoords = coordinateFileReader.readLine().split(", ");
             int startX = Integer.parseInt(startingCoords[0]);
             int startY = Integer.parseInt(startingCoords[1].replace(";", ""));
+            Coordinate start = new Coordinate(startX, startY);
 
             String[] endingCoords = coordinateFileReader.readLine().split(", ");
             int endX = Integer.parseInt(endingCoords[0]);
             int endY = Integer.parseInt(endingCoords[1].replace(";", ""));
+            Coordinate end = new Coordinate(endX, endY);
 
-            return new Maze(cells, startX, startY, endX, endY);
+            return new Maze(cells, start, end);
         } finally {
             if (mazeFileReader != null) {
                 mazeFileReader.close();
