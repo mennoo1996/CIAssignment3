@@ -8,6 +8,11 @@ public class Driver {
 	public static final double PHEROMONE = 832;
 	public static final double EVAPORATION = 0.5;
 	public static final double CONVERGENCE_CRITERIA = 1;
+	
+	public static final int STARTING_X = 0;
+	public static final int STARTING_Y = 0;
+	public static final int ENDING_X = 50;
+	public static final int ENDING_Y = 50;
 
 	public static void main(String[] args) {
 		System.out.println("Hello World");
