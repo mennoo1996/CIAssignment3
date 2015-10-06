@@ -3,11 +3,9 @@ package com.ci.group20.maze;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.IllegalFormatException;
 
 /**
  * Parser for maze files.
