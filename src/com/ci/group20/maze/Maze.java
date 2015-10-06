@@ -5,10 +5,10 @@ package com.ci.group20.maze;
  */
 public class Maze {
     private final boolean[][] cells;
-    private final int startX;
-    private final int startY;
-    private final int endX;
-    private final int endY;
+    private int startX;
+    private int startY;
+    private int endX;
+    private int endY;
 
     public Maze(final boolean[][] cells, int startX, int startY, int endX, int endY) {
         this.startX = startX;
@@ -17,6 +17,23 @@ public class Maze {
         this.endY = endY;
         this.cells = cells;
     }
+
+    public void setStartX(int startX) {
+        this.startX = startX;
+    }
+
+    public void setStartY(int startY) {
+        this.startY = startY;
+    }
+
+    public void setEndX(int endX) {
+        this.endX = endX;
+    }
+
+    public void setEndY(int endY) {
+        this.endY = endY;
+    }
+
 
     public int getStartX() {
         return startX;
