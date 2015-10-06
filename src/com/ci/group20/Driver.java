@@ -29,17 +29,6 @@ public class Driver {
 
         MazeParser parser = new MazeParser();
         Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
-
-        Stack<Integer> a = new Stack<Integer>();
-        a.push(1);
-        a.push(2);
-        System.out.println(a.top());
-        a.pop();
-        System.out.println(a.top());
-        a.pop();
-        a.pop();
-		//Bla
-
 	}
 
 }
