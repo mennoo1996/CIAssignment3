@@ -34,7 +34,7 @@ public class MazeParser {
             int width = Integer.parseInt(size[0]);
             int height = Integer.parseInt(size[1]);
 
-            boolean[][] cells = new boolean[width][height];
+            float[][] cells = new float[width][height];
 
             for (int y = 0; y < height; y++) {
                 String[] rowCells = mazeFileReader.readLine().split(" ");
@@ -45,10 +45,10 @@ public class MazeParser {
                 for (int x = 0; x < width; x++) {
                     switch (rowCells[x]) {
                         case "0":
-                            cells[x][y] = false;
+                            cells[x][y] = 0;
                             break;
                         case "1":
-                            cells[x][y] = true;
+                            cells[x][y] = 1;
                             break;
                         default:
                             throw new IllegalArgumentException("Maze file line " + (y + 1) + " is no valid maze row");

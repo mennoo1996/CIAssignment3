@@ -8,11 +8,11 @@ import com.ci.group20.util.Coordinate;
 
 //Moet geen boolean zijn ivm pheromone
 public class Maze {
-    private final boolean[][] cells;
+    private final float[][] cells;
     private Coordinate start;
     private Coordinate end;
 
-    public Maze(final boolean[][] cells, Coordinate start, Coordinate end) {
+    public Maze(final float[][] cells, Coordinate start, Coordinate end) {
         this.start = start;
         this.end = end;
         this.cells = cells;
@@ -26,7 +26,7 @@ public class Maze {
         this.end = end;
     }
 
-    public boolean isCellAccessible(int x, int y) {
+    public float getCellPheromone(int x, int y) {
         if (x < 0 || x >= cells.length) {
             throw new IllegalArgumentException("Invalid x coordinate");
         }
@@ -36,16 +36,27 @@ public class Maze {
 
         return cells[x][y];
     }
+
+    public void setCellPheromone(int x, int y, float pheromone) {
+        if (x < 0 || x >= cells.length) {
+            throw new IllegalArgumentException("Invalid x coordinate");
+        }
+        if (y < 0 || y >= cells.length) {
+            throw new IllegalArgumentException("Invalid y coordinate");
+        }
+
+        cells[x][y] = pheromone;
+    }
     
     public String toString(){
     	
     	String res = "";
     	
     	for(int i=0; i<cells[0].length; i++){
-    	for(int j=0; j<cells.length; j++){
-    		res = res + Boolean.toString(cells[j][i]) + " ";
-    	}
-    	res = res + "\n";
+            for(int j=0; j<cells.length; j++){
+                res = res + Float.toString(cells[j][i]) + " ";
+            }
+            res = res + "\n";
     	}
     	return res;
     	
