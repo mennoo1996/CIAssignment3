@@ -41,17 +41,12 @@ public class Maze {
     	
     	String res = "";
     	
-    	
-    	for(int i = 0; i<cells.length; i++){
-    		
-    		for(int j =0; j<cells[i].length; j++){
-    			
-    			res =res + " " + Boolean.toString(cells[i][j]);
-    		
-    		}
-    		res = res + "\n";
+    	for(int i=0; i<cells[0].length; i++){
+    	for(int j=0; j<cells.length; j++){
+    		res = res + Boolean.toString(cells[j][i]) + " ";
     	}
-    	
+    	res = res + "\n";
+    	}
     	return res;
     	
     }
