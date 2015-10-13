@@ -60,4 +60,20 @@ public class Maze {
         }
     	return res.toString();
     }
+
+	/**
+	 * @return the start
+	 */
+	public Coordinate getStart() {
+		return start;
+	}
+
+	/**
+	 * @return the end
+	 */
+	public Coordinate getEnd() {
+		return end;
+	}
+    
+    
 }
