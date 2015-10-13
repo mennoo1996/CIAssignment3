@@ -27,6 +27,7 @@ public class Driver {
 
         MazeParser parser = new MazeParser();
         Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
+        System.out.println(m.toString());
     }
 
 }

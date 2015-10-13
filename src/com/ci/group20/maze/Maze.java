@@ -36,4 +36,23 @@ public class Maze {
 
         return cells[x][y];
     }
+    
+    public String toString(){
+    	
+    	String res = "";
+    	
+    	
+    	for(int i = 0; i<cells.length; i++){
+    		
+    		for(int j =0; j<cells[i].length; j++){
+    			
+    			res =res + " " + Boolean.toString(cells[i][j]);
+    		
+    		}
+    		res = res + "\n";
+    	}
+    	
+    	return res;
+    	
+    }
 }
