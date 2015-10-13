@@ -26,26 +26,26 @@ public class Maze {
         this.end = end;
     }
 
-    public float getCellPheromone(int x, int y) {
-        if (x < 0 || x >= cells.length) {
+    public float getCellPheromone(Coordinate coord) {
+        if (coord.x < 0 || coord.x >= cells.length) {
             throw new IllegalArgumentException("Invalid x coordinate");
         }
-        if (y < 0 || y >= cells.length) {
+        if (coord.y < 0 || coord.y >= cells.length) {
             throw new IllegalArgumentException("Invalid y coordinate");
         }
 
-        return cells[x][y];
+        return cells[coord.x][coord.y];
     }
 
-    public void setCellPheromone(int x, int y, float pheromone) {
-        if (x < 0 || x >= cells.length) {
+    public void setCellPheromone(Coordinate coord, float pheromone) {
+        if (coord.x < 0 || coord.x >= cells.length) {
             throw new IllegalArgumentException("Invalid x coordinate");
         }
-        if (y < 0 || y >= cells.length) {
+        if (coord.y < 0 || coord.y >= cells.length) {
             throw new IllegalArgumentException("Invalid y coordinate");
         }
 
-        cells[x][y] = pheromone;
+        cells[coord.x][coord.y] = pheromone;
     }
     
     public String toString() {
