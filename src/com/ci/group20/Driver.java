@@ -30,16 +30,16 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 10;
-    public static final int NUMBER_OF_ANTS = 1000;
+    public static final int MAX_ITERATIONS = 10000;
+    public static final int NUMBER_OF_ANTS = 10000;
     public static final double PHEROMONE = 832;
     public static final double EVAPORATION = 0.5;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
     public static final int STARTING_Y = 0;
-    public static final int ENDING_X = 50;
-    public static final int ENDING_Y = 50;
+    public static final int ENDING_X = 24;
+    public static final int ENDING_Y = 14;
     private static final String MAZE_NAME = "easy";
 
     public static void main(String[] args) throws IOException {
@@ -48,7 +48,11 @@ public class Driver {
 
         MazeParser parser = new MazeParser();
         Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
-        System.out.println(m.toString());
+        //System.out.println(m.toString());
+
+        if (ENDING_X > m.size().x ||  ENDING_Y > m.size().y) {
+            throw new IllegalArgumentException("Maze ending out of bounds");
+        }
 
         ArrayList<Ant> ants = new ArrayList<>(NUMBER_OF_ANTS);
         for (int i = 0; i < NUMBER_OF_ANTS; i++) {
@@ -58,6 +62,7 @@ public class Driver {
         Coordinate target = new Coordinate(ENDING_X, ENDING_Y);
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(ant -> ant.find(target));
+            m.evaporate(EVAPORATION);
             ants.stream().forEach(Ant::spreadPheromone);
         }
     }
