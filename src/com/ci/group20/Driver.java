@@ -2,8 +2,11 @@ package com.ci.group20;
 
 import com.ci.group20.maze.Maze;
 import com.ci.group20.maze.MazeParser;
+import com.ci.group20.util.Coordinate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Driver {
 	
@@ -46,6 +49,17 @@ public class Driver {
         MazeParser parser = new MazeParser();
         Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
         System.out.println(m.toString());
+
+        ArrayList<Ant> ants = new ArrayList<>(NUMBER_OF_ANTS);
+        for (int i = 0; i < NUMBER_OF_ANTS; i++) {
+            ants.add(new Ant(m, new Coordinate(STARTING_X, STARTING_Y)));
+        }
+
+        Coordinate target = new Coordinate(ENDING_X, ENDING_Y);
+        for (int i = 0; i < MAX_ITERATIONS; i++) {
+            ants.parallelStream().forEach(ant -> ant.find(target));
+            ants.stream().forEach(Ant::spreadPheromone);
+        }
     }
 
 }
