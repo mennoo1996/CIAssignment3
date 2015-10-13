@@ -46,7 +46,7 @@ public class MazeParser {
                 for (int x = 0; x < width; x++) {
                     switch (rowCells[x]) {
                         case "0":
-                            cells[x][y] = 0;
+                            cells[x][y] = -1;
                             break;
                         case "1":
                             cells[x][y] = 1;

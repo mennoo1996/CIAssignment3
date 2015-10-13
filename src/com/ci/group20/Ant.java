@@ -31,38 +31,38 @@ public class Ant {
         ArrayList<Coordinate> possibilities = new ArrayList<>();
 
         int i = 0;
-
         while (!walkedPath.peek().equals(target)) {
             i++;
             Coordinate coordinate = walkedPath.peek();
             possibilities.clear();
             if ((coordinate.x - 1) >= 0) {
                 Coordinate c = Coordinate.get(coordinate.x - 1, coordinate.y);
-                if (maze.getCellPheromone(c) > 1e-6) {
+                if (maze.getCellPheromone(c) >= 0) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.x + 1) < mazeSize.x) {
                 Coordinate c = Coordinate.get(coordinate.x + 1, coordinate.y);
-                if (maze.getCellPheromone(c) > 1e-6) {
+                if (maze.getCellPheromone(c) >= 0) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.y - 1) >= 0) {
                 Coordinate c = Coordinate.get(coordinate.x, coordinate.y - 1);
-                if (maze.getCellPheromone(c) > 1e-6) {
+                if (maze.getCellPheromone(c) >= 0) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.y + 1) < mazeSize.y) {
                 Coordinate c = Coordinate.get(coordinate.x, coordinate.y + 1);
-                if (maze.getCellPheromone(c) > 1e-6) {
+                if (maze.getCellPheromone(c) >= 0) {
                     possibilities.add(c);
                 }
             }
             Coordinate next = possibilities.get(random.nextInt(possibilities.size()));
             walkedPath.push(next);
         }
+        System.gc();
         System.out.printf("Found coord in %d iteration\n", i);
     }
 
