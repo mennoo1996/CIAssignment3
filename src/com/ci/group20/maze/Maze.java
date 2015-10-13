@@ -48,17 +48,16 @@ public class Maze {
         cells[x][y] = pheromone;
     }
     
-    public String toString(){
-    	
-    	String res = "";
-    	
-    	for(int i=0; i<cells[0].length; i++){
-            for(int j=0; j<cells.length; j++){
-                res = res + Float.toString(cells[j][i]) + " ";
+    public String toString() {
+    	StringBuilder res = new StringBuilder("");
+
+        for (float[] row : cells) {
+            for (float cell : row) {
+                res.append(cell);
+                res.append(' ');
             }
-            res = res + "\n";
-    	}
-    	return res;
-    	
+            res.append('\n');
+        }
+    	return res.toString();
     }
 }
