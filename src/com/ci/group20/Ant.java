@@ -13,42 +13,49 @@ import java.util.Stack;
 public class Ant {
     private Random random;
     private Maze maze;
+    private Coordinate startingPosition;
     private Stack<Coordinate> walkedPath;
 
     public Ant(Maze maze, Coordinate position) {
         this.maze = maze;
         random = new Random();
+        startingPosition = position;
         walkedPath = new Stack<>();
         walkedPath.push(position);
     }
 
     public void find(Coordinate target) {
+        walkedPath.clear();
+        walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
         ArrayList<Coordinate> possibilities = new ArrayList<>();
 
+        int i = 0;
+
         while (!walkedPath.peek().equals(target)) {
+            i++;
             Coordinate coordinate = walkedPath.peek();
             possibilities.clear();
             if ((coordinate.x - 1) >= 0) {
-                Coordinate c = new Coordinate(coordinate.x - 1, coordinate.y);
+                Coordinate c = Coordinate.get(coordinate.x - 1, coordinate.y);
                 if (maze.getCellPheromone(c) > 1e-6) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.x + 1) < mazeSize.x) {
-                Coordinate c = new Coordinate(coordinate.x + 1, coordinate.y);
+                Coordinate c = Coordinate.get(coordinate.x + 1, coordinate.y);
                 if (maze.getCellPheromone(c) > 1e-6) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.y - 1) >= 0) {
-                Coordinate c = new Coordinate(coordinate.x, coordinate.y - 1);
+                Coordinate c = Coordinate.get(coordinate.x, coordinate.y - 1);
                 if (maze.getCellPheromone(c) > 1e-6) {
                     possibilities.add(c);
                 }
             }
             if ((coordinate.y + 1) < mazeSize.y) {
-                Coordinate c = new Coordinate(coordinate.x, coordinate.y + 1);
+                Coordinate c = Coordinate.get(coordinate.x, coordinate.y + 1);
                 if (maze.getCellPheromone(c) > 1e-6) {
                     possibilities.add(c);
                 }
@@ -56,6 +63,7 @@ public class Ant {
             Coordinate next = possibilities.get(random.nextInt(possibilities.size()));
             walkedPath.push(next);
         }
+        System.out.printf("Found coord in %d iteration\n", i);
     }
 
     public void spreadPheromone() {

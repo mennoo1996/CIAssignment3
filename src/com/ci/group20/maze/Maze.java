@@ -85,7 +85,7 @@ public class Maze {
     }
 
     public Coordinate size() {
-        if (cells.length == 0) return new Coordinate(0, 0);
-        return new Coordinate(cells.length, cells[0].length);
+        if (cells.length == 0) return Coordinate.get(0, 0);
+        return Coordinate.get(cells.length, cells[0].length);
     }
 }

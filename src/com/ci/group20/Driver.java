@@ -56,10 +56,10 @@ public class Driver {
 
         ArrayList<Ant> ants = new ArrayList<>(NUMBER_OF_ANTS);
         for (int i = 0; i < NUMBER_OF_ANTS; i++) {
-            ants.add(new Ant(m, new Coordinate(STARTING_X, STARTING_Y)));
+            ants.add(new Ant(m, Coordinate.get(STARTING_X, STARTING_Y)));
         }
 
-        Coordinate target = new Coordinate(ENDING_X, ENDING_Y);
+        Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(ant -> ant.find(target));
             m.evaporate(EVAPORATION);

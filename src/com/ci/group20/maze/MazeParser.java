@@ -34,6 +34,7 @@ public class MazeParser {
             int width = Integer.parseInt(size[0]);
             int height = Integer.parseInt(size[1]);
 
+            Coordinate.initializePool(width, height);
             float[][] cells = new float[width][height];
 
             for (int y = 0; y < height; y++) {
@@ -59,12 +60,12 @@ public class MazeParser {
             String[] startingCoords = coordinateFileReader.readLine().split(", ");
             int startX = Integer.parseInt(startingCoords[0]);
             int startY = Integer.parseInt(startingCoords[1].replace(";", ""));
-            Coordinate start = new Coordinate(startX, startY);
+            Coordinate start = Coordinate.get(startX, startY);
 
             String[] endingCoords = coordinateFileReader.readLine().split(", ");
             int endX = Integer.parseInt(endingCoords[0]);
             int endY = Integer.parseInt(endingCoords[1].replace(";", ""));
-            Coordinate end = new Coordinate(endX, endY);
+            Coordinate end = Coordinate.get(endX, endY);
 
             return new Maze(cells, start, end);
         } finally {
