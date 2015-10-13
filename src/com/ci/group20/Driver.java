@@ -6,6 +6,24 @@ import com.ci.group20.maze.MazeParser;
 import java.io.IOException;
 
 public class Driver {
+	
+	/*
+	 * Initialize maze
+		Initialize pheromone values
+		For each iteration
+			For each ant
+				While not done
+					Check which directions are viable
+					Choose direction based on pheromone level (use Random)
+					If reached destination
+						Drop appropriate amount of pheromone on walked route
+						// this should not affect the ants still to walk in this
+						// iteraton. Just put all the pheromone together at the
+						// end. But make sure you save it somewhere
+						Set done (return to start point)
+			Put all the pheromone dropped together
+
+	 */
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
