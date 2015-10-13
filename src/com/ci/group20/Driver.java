@@ -62,7 +62,7 @@ public class Driver {
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(ant -> ant.find(target));
-            m.evaporate(EVAPORATION);
+            //m.evaporate(EVAPORATION);
             ants.stream().forEach(Ant::spreadPheromone);
         }
     }
