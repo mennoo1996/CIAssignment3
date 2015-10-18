@@ -7,6 +7,8 @@ import com.ci.group20.util.Coordinate;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Driver {
 	
@@ -31,9 +33,9 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 10000;
-    public static final int NUMBER_OF_ANTS = 10000;
-    public static final double PHEROMONE = 832;
-    public static final double EVAPORATION = 0.5;
+    public static final int NUMBER_OF_ANTS = 100;
+    public static final float PHEROMONE = 200f;
+    public static final double EVAPORATION = 0.1f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -61,9 +63,15 @@ public class Driver {
 
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
         for (int i = 0; i < MAX_ITERATIONS; i++) {
-            ants.parallelStream().forEach(ant -> ant.find(target));
-            //m.evaporate(EVAPORATION);
-            ants.stream().forEach(Ant::spreadPheromone);
+            ants.stream().forEach(ant -> ant.find(target));
+            System.out.println("ITER");
+            m.evaporate(EVAPORATION);
+            List<Integer> lens = ants.parallelStream().map((ant) -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
+            System.out.println(lens.parallelStream().reduce((x, y) -> x + y).get() / lens.size());
+           /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
+                System.out.println("FOUND OPTIMUM");
+                break;
+            }*/
         }
     }
 

@@ -4,6 +4,7 @@ import com.ci.group20.maze.Maze;
 import com.ci.group20.util.Coordinate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Stack;
 
@@ -28,44 +29,77 @@ public class Ant {
         walkedPath.clear();
         walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
-        ArrayList<Coordinate> possibilities = new ArrayList<>();
+        Coordinate[] possibilities = new Coordinate[4];
+        float[] accumProbabilities = new float[4];
+        float totalPheromone;
 
         int i = 0;
         while (!walkedPath.peek().equals(target)) {
             i++;
             Coordinate coordinate = walkedPath.peek();
-            possibilities.clear();
-            if ((coordinate.x - 1) >= 0) {
-                Coordinate c = Coordinate.get(coordinate.x - 1, coordinate.y);
-                if (maze.getCellPheromone(c) >= 0) {
-                    possibilities.add(c);
+
+            if (coordinate.x - 1 >= 0) {
+                possibilities[0] = Coordinate.get(coordinate.x - 1, coordinate.y);
+            } else {
+                possibilities[0] = null;
+            }
+            if (coordinate.x + 1 < mazeSize.x) {
+                possibilities[1] = Coordinate.get(coordinate.x + 1, coordinate.y);
+            } else {
+                possibilities[1] = null;
+            }
+            if (coordinate.y - 1 >= 0) {
+                possibilities[2] = Coordinate.get(coordinate.x, coordinate.y - 1);
+            } else {
+                possibilities[2] = null;
+            }
+            if (coordinate.y + 1 < mazeSize.y) {
+                possibilities[3] = Coordinate.get(coordinate.x, coordinate.y + 1);
+            } else {
+                possibilities[3] = null;
+            }
+
+            totalPheromone = 0;
+            for (Coordinate possible : possibilities) {
+                if (possible != null) {
+                    totalPheromone += Math.max(0, maze.getCellPheromone(possible));
                 }
             }
-            if ((coordinate.x + 1) < mazeSize.x) {
-                Coordinate c = Coordinate.get(coordinate.x + 1, coordinate.y);
-                if (maze.getCellPheromone(c) >= 0) {
-                    possibilities.add(c);
+            accumProbabilities[0] = (possibilities[0] != null ? Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone : 0);
+            accumProbabilities[1] = accumProbabilities[0] +
+                    (possibilities[1] != null ? Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone : 0);
+            accumProbabilities[2] = accumProbabilities[1] +
+                    (possibilities[2] != null ? Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone : 0);
+            accumProbabilities[3] = 1;
+
+            float prob = random.nextFloat();
+            int idx;
+            for (idx = 0; idx < accumProbabilities.length; idx++) {
+                if (prob < accumProbabilities[idx]) {
+                    break;
                 }
             }
-            if ((coordinate.y - 1) >= 0) {
-                Coordinate c = Coordinate.get(coordinate.x, coordinate.y - 1);
-                if (maze.getCellPheromone(c) >= 0) {
-                    possibilities.add(c);
-                }
+
+            if (idx > 3) {
+                int v = 1 + 1;
             }
-            if ((coordinate.y + 1) < mazeSize.y) {
-                Coordinate c = Coordinate.get(coordinate.x, coordinate.y + 1);
-                if (maze.getCellPheromone(c) >= 0) {
-                    possibilities.add(c);
-                }
-            }
-            Coordinate next = possibilities.get(random.nextInt(possibilities.size()));
-            walkedPath.push(next);
+
+            walkedPath.push(possibilities[idx]);
         }
         System.gc();
-        System.out.printf("Found coord in %d iteration\n", i);
+        //System.out.printf("Found coord in %d iteration\n", i);
     }
 
-    public void spreadPheromone() {
+    public int spreadPheromone(float amount) {
+        HashSet<Coordinate> cache = new HashSet<>();
+        for (Coordinate c : walkedPath) {
+            if (!cache.contains(c)) {
+                cache.add(c);
+                synchronized (c) {
+                    maze.setCellPheromone(c, amount / walkedPath.size() + maze.getCellPheromone(c));
+                }
+            }
+        }
+        return walkedPath.size();
     }
 }
