@@ -80,7 +80,9 @@ public class Maze {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 if (cells[x][y] > 0) {
-                    cells[x][y] *= (1 - evaporation);
+                	if((cells[x][y]*(1- evaporation)) > 0){
+                		cells[x][y] *= (1 - evaporation);
+                	}
                 }
             }
         }
