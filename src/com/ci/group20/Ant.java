@@ -116,7 +116,7 @@ public class Ant {
                 cache.add(c);
                 maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 6) + maze.getCellPheromone(c));
             } else {
-                maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.9999f);
+                maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.999f);
             }
         }
         return walkedPath.size();
