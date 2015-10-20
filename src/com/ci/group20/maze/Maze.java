@@ -79,8 +79,8 @@ public class Maze {
     public void evaporate(double evaporation) {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                if (cells[x][y] > 0) {
-                	if((cells[x][y]*(1- evaporation)) > 0){
+                if (cells[x][y] > 1e-6) {
+                	if((cells[x][y]*(1- evaporation)) > 1e-6){
                 		cells[x][y] *= (1 - evaporation);
                 	}
                 }

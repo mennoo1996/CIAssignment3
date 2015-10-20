@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Driver {
@@ -34,9 +35,9 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 1000000;
-    public static final int NUMBER_OF_ANTS = 10;
+    public static final int NUMBER_OF_ANTS = 45;
     public static final float PHEROMONE = 400f;
-    public static final double EVAPORATION = 0.05f;
+    public static final double EVAPORATION = 0.04f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -65,13 +66,32 @@ public class Driver {
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
         int i;
         Stack<Coordinate> result = new Stack<>();
+
+        for (i = 0; i < 20; i++) {
+            ants.get(0).find(target);
+            System.out.println("PRELOAD: " + ants.get(0).spreadPheromone(PHEROMONE));
+        }
+
         for (i = 0; i < MAX_ITERATIONS; i++) {
-            ants.parallelStream().forEach(ant -> ant.find(target));
+            ants.parallelStream().forEach(
+                    (Ant ant) -> {
+                        ant.find(target);
+                    }
+            );
             System.out.println("ITER");
             m.evaporate(EVAPORATION);
-            List<Integer> lens = ants.stream().map((ant) -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
-            System.out.println(lens.stream().reduce(Integer::sum).get() / lens.size());
-            int min = lens.parallelStream().min(Integer::compare).get();
+            List<Integer> lens = ants.stream().map(
+                    (Ant ant) -> {
+                            return ant.spreadPheromone(PHEROMONE);
+                    }
+            ).collect(Collectors.toList());
+            System.out.println(
+                    lens.stream()
+                            .reduce(Integer::sum)
+                            .get() / lens.size());
+            int min = lens.parallelStream()
+                    .min(Integer::compare)
+                    .get();
             System.out.println(min);
             if (min < 300) {
                 result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();

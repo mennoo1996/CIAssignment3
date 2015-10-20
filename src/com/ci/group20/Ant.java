@@ -40,7 +40,12 @@ public class Ant {
         int i = 0;
         while (!walkedPath.peek().equals(target)) {
             i++;
-            Coordinate coordinate = walkedPath.peek();
+            Coordinate coordinate = walkedPath.pop();
+            Coordinate prev = null;
+            if (!walkedPath.empty()) {
+                prev = walkedPath.peek();
+            }
+            walkedPath.push(coordinate);
 
             if (coordinate.x - 1 >= 0) {
                 possibilities[0] = Coordinate.get(coordinate.x - 1, coordinate.y);
@@ -69,12 +74,13 @@ public class Ant {
                     totalPheromone += Math.max(0, maze.getCellPheromone(possible));
                 }
             }
-            accumProbabilities[0] = (possibilities[0] != null ? Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone : 0);
+            accumProbabilities[0] = (possibilities[0] != null && possibilities[0] != prev ? Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone : 0);
             accumProbabilities[1] = accumProbabilities[0] +
-                    (possibilities[1] != null ? Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone : 0);
+                    (possibilities[1] != null && possibilities[1] != prev ? Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone : 0);
             accumProbabilities[2] = accumProbabilities[1] +
-                    (possibilities[2] != null ? Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone : 0);
-            accumProbabilities[3] = 1;
+                    (possibilities[2] != null && possibilities[2] != prev ? Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone : 0);
+            accumProbabilities[3] = accumProbabilities[2] +
+                    (possibilities[3] != null && possibilities[3] != prev ? Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone : 0);
 
             float prob = random.nextFloat();
             int idx;
@@ -82,6 +88,11 @@ public class Ant {
                 if (prob < accumProbabilities[idx]) {
                     break;
                 }
+            }
+
+            if (idx >= possibilities.length || possibilities[idx] == null) {
+                walkedPath.push(prev);
+                continue;
             }
 
             if (idx > 3) {
