@@ -17,6 +17,7 @@ public class Ant {
     private Maze maze;
     private Coordinate startingPosition;
     private Stack<Coordinate> walkedPath;
+    private ArrayList<String> movement;
 
     public Stack<Coordinate> getPath() {
         return walkedPath;
@@ -28,6 +29,7 @@ public class Ant {
         startingPosition = position;
         walkedPath = new Stack<>();
         walkedPath.push(position);
+        movement = new ArrayList<String>();
     }
 
     public void find(Coordinate target) {
@@ -102,7 +104,11 @@ public class Ant {
             if (idx > 3) {
                 int v = 1 + 1;
             }
-
+            
+            
+            closeopenareas(idx, coordinate);
+            
+            
             walkedPath.push(possibilities[idx]);
         }
         System.gc();
@@ -120,5 +126,146 @@ public class Ant {
             }
         }
         return walkedPath.size();
+    }
+    
+    public void closeopenareas(int idx, Coordinate coordinate){
+    	
+    	switch(idx){
+    	
+    	case 0:
+    		
+    		if(coordinate.x-1 >= 0){
+    			Coordinate left = Coordinate.get(coordinate.x-1, coordinate.y);
+    			
+    			float leftup = -1f;
+    			if(coordinate.y +1 < maze.size().y){
+    				leftup = maze.getCellPheromone(Coordinate.get(coordinate.x-1, coordinate.y+1));
+    			}
+    			
+    			float leftdown = -1f;
+    			if(coordinate.y - 1 >= 0){
+    				leftup = maze.getCellPheromone(Coordinate.get(coordinate.x-1, coordinate.y+1));
+    			}
+    			
+    		
+    			if(maze.getCellPheromone(left) >= 0){
+    			
+    				if(leftup < 0 && leftdown >= 0){
+    				
+    					closeopenareas(idx, left);
+    					maze.setCellPheromone(left, -1f);
+    			}
+    				else if(leftdown < 0 && leftup >= 0){
+    				
+    					closeopenareas(idx, left);
+    					maze.setCellPheromone(left, -1f);
+    				
+    				}
+    			
+    			}
+    		}
+    		break;
+    	case 1:
+    		
+    		if(coordinate.x+1 < maze.size().x){
+    		
+    			Coordinate right = Coordinate.get(coordinate.x+1, coordinate.y);
+    			
+    			float rightup = -1f;
+    			if(coordinate.y +1 < maze.size().y){
+    				
+    				rightup = maze.getCellPheromone(Coordinate.get(coordinate.x+1, coordinate.y+1));
+    			}
+    			
+    			float rightdown = -1f;
+    			if(coordinate.y -1 >= 0){
+    				
+    				rightdown = maze.getCellPheromone(Coordinate.get(coordinate.x+1, coordinate.y+1));
+    			}
+    			
+    		
+    			if(maze.getCellPheromone(right) >= 0){
+    			
+    				if(rightup < 0 && rightdown >= 0){
+    				
+    					closeopenareas(idx, right);
+    					maze.setCellPheromone(right, -1f);
+    				}
+    				else if(rightdown < 0 && rightup >= 0){
+    				
+    					closeopenareas(idx, right);
+    					maze.setCellPheromone(right, -1f);
+    				
+    				}    			
+    			}    	
+    		}
+    		break;
+    	case 2:	
+    		
+    		if(coordinate.y-1 >= 0){    		
+    			
+    			Coordinate down = Coordinate.get(coordinate.x, coordinate.y-1);
+    			
+    			float downleft = -1f;
+    			if(coordinate.x-1 >= 0){
+    				downleft = maze.getCellPheromone(Coordinate.get(down.x-1, down.y));
+    			}
+
+    			float downright = -1f;
+    			if(coordinate.x+1 < maze.size().y){
+    				downright = maze.getCellPheromone(Coordinate.get(down.x+1, down.y));
+    			}
+    		
+    			if(maze.getCellPheromone(down) >= 0){
+    			
+    				if(downleft < 0 && downright >= 0){
+    				
+    					closeopenareas(idx, down);
+    					maze.setCellPheromone(down, -1f);
+    				}
+    				else if(downright < 0 && downleft >= 0){
+    				
+    					closeopenareas(idx, down);
+    					maze.setCellPheromone(down, -1f);
+    				
+    				}
+    			}
+    		}
+    		break;
+    	case 3:
+    		
+    		if(coordinate.y+1 < maze.size().y){
+    		
+    			Coordinate up = Coordinate.get(coordinate.x, coordinate.y+1);
+    			
+    			float upleft = -1f;
+    			if(up.x-1 >=0){
+    				upleft = maze.getCellPheromone(Coordinate.get(up.x-1, up.y));
+    			}
+
+    			float upright = -1f;
+    			if(up.x+1 < maze.size().x){
+    				upright = maze.getCellPheromone(Coordinate.get(up.x+1, up.y));
+    			}
+    			
+    		
+    			if(maze.getCellPheromone(up) >= 0){
+    			
+    				if(upleft < 0 && upright >= 0){
+    				
+    					closeopenareas(idx, up);
+    					maze.setCellPheromone(up, -1f);
+    				}
+    				else if(upright < 0 && upleft >= 0){
+    				
+    					closeopenareas(idx, up);
+    					maze.setCellPheromone(up, -1f);
+    				
+    				}
+    			}
+    		}
+    		break;
+    }
+    	
     }
 }
