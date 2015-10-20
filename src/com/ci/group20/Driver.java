@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class Driver {
@@ -32,17 +33,17 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 1000;
-    public static final int NUMBER_OF_ANTS = 100;
-    public static final float PHEROMONE = 50f;
-    public static final double EVAPORATION = 0.03f;
+    public static final int MAX_ITERATIONS = 1000000;
+    public static final int NUMBER_OF_ANTS = 10;
+    public static final float PHEROMONE = 400f;
+    public static final double EVAPORATION = 0.05f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
     public static final int STARTING_Y = 0;
-    public static final int ENDING_X = 24;
-    public static final int ENDING_Y = 14;
-    private static final String MAZE_NAME = "easy";
+    public static final int ENDING_X = 58;
+    public static final int ENDING_Y = 55;
+    private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello World");
@@ -63,6 +64,7 @@ public class Driver {
 
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
         int i;
+        Stack<Coordinate> result = new Stack<>();
         for (i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(ant -> ant.find(target));
             System.out.println("ITER");
@@ -71,7 +73,8 @@ public class Driver {
             System.out.println(lens.stream().reduce(Integer::sum).get() / lens.size());
             int min = lens.parallelStream().min(Integer::compare).get();
             System.out.println(min);
-            if (min < 60) {
+            if (min < 300) {
+                result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
                 break;
             }
 
@@ -81,6 +84,9 @@ public class Driver {
             }*/
         }
         System.out.println("CONVERGED IN " + i);
+        for (Coordinate c : result) {
+            System.out.println(c);
+        }
     }
 
 }

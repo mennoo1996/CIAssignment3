@@ -17,6 +17,10 @@ public class Ant {
     private Coordinate startingPosition;
     private Stack<Coordinate> walkedPath;
 
+    public Stack<Coordinate> getPath() {
+        return walkedPath;
+    }
+
     public Ant(Maze maze, Coordinate position) {
         this.maze = maze;
         random = new Random();
@@ -95,7 +99,7 @@ public class Ant {
         for (Coordinate c : walkedPath) {
             if (!cache.contains(c)) {
                 cache.add(c);
-                maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 6) + maze.getCellPheromone(c));
+                maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 8) + maze.getCellPheromone(c));
             } else {
                 maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.9999f);
             }
