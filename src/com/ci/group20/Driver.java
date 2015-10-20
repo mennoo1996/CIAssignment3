@@ -1,16 +1,16 @@
 package com.ci.group20;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
+
 import com.ci.group20.maze.Maze;
 import com.ci.group20.maze.MazeParser;
 import com.ci.group20.util.Coordinate;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Driver {
 	
@@ -34,7 +34,7 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 1000000;
+    public static final int MAX_ITERATIONS = 50;
     public static final int NUMBER_OF_ANTS = 300;
     public static final float PHEROMONE = 400f;
     public static final double EVAPORATION = 0.02f;
@@ -54,6 +54,8 @@ public class Driver {
         Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
         //System.out.println(m.toString());
 
+        
+        
         if (ENDING_X > m.size().x ||  ENDING_Y > m.size().y) {
             throw new IllegalArgumentException("Maze ending out of bounds");
         }
@@ -100,6 +102,7 @@ public class Driver {
                 printPath(m, result);
             }
             if (min < 300) break;
+           
 
            /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
                 System.out.println("FOUND OPTIMUM");
@@ -111,7 +114,10 @@ public class Driver {
         System.out.println("CONVERGED IN " + i);
         for (Coordinate c : result) {
             System.out.println(c);
+
         }
+    	printVisualizerPath(m, result);
+
     }
 
     static void printPath(Maze m, Stack<Coordinate> path) {
@@ -132,5 +138,43 @@ public class Driver {
         }
         System.out.println(res.toString());
     }
+    
+    static void printVisualizerPath(Maze m, Stack<Coordinate> path) {
+    	PrintWriter writer = null;
+    	try {
+    		writer = new PrintWriter(new FileWriter("visualizerOutput.txt"));
+    		
+	    	
+	    	writer.println(path.size() + ";");
+	    	writer.println(STARTING_X + ", " + STARTING_Y + ";");
+	    	Coordinate prevCoord = null;
+	    	for (int i = 0;i<path.size();i++) {
+	    		Coordinate coord = path.get(i);
+	    		if (i==0) {
+	    			prevCoord = coord;
+	    		} else {
+	    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
+	    				writer.println("1;");
+	    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
+	    				writer.println("3;");
+	    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
+	    				writer.println("2;");
+	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
+	    				writer.println("0;");
+	    			}
+	    			prevCoord = coord;
+	    		}
+	    		
+	    	}
+    	} catch (IOException e) {
+    		
+    	} finally {
+    		if (writer!=null) {
+    			writer.close();
+    		}
+    	}
+    }
+    
+
 
 }
