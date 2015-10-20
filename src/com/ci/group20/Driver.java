@@ -33,9 +33,9 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 10000;
-    public static final int NUMBER_OF_ANTS = 100;
-    public static final float PHEROMONE = 200f;
-    public static final double EVAPORATION = 0.1f;
+    public static final int NUMBER_OF_ANTS = 1000;
+    public static final float PHEROMONE = 50f;
+    public static final double EVAPORATION = 0.02f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -67,7 +67,8 @@ public class Driver {
             System.out.println("ITER");
             m.evaporate(EVAPORATION);
             List<Integer> lens = ants.parallelStream().map((ant) -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
-            System.out.println(lens.parallelStream().reduce((x, y) -> x + y).get() / lens.size());
+            System.out.println(lens.stream().reduce(Integer::sum).get() / lens.size());
+            System.out.println(lens.parallelStream().min(Integer::compare).get());
            /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
                 System.out.println("FOUND OPTIMUM");
                 break;

@@ -95,9 +95,9 @@ public class Ant {
         for (Coordinate c : walkedPath) {
             if (!cache.contains(c)) {
                 cache.add(c);
-                synchronized (c) {
-                    maze.setCellPheromone(c, amount / walkedPath.size() + maze.getCellPheromone(c));
-                }
+                maze.setCellPheromone(c, amount / (walkedPath.size() * walkedPath.size()) + maze.getCellPheromone(c));
+            } else {
+                maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.9999f);
             }
         }
         return walkedPath.size();
