@@ -74,6 +74,9 @@ public class Driver {
             System.out.println("PRELOAD: " + ants.get(0).spreadPheromone(PHEROMONE));
         }
         //System.out.println(m);
+        
+        // EDIT THIS FOR OTHER MAZES
+        int absoluteMin = 2001;
 
         for (i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(
@@ -98,6 +101,11 @@ public class Driver {
             System.out.println(min);
             result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
             //printPath(m, result);
+            if (min < absoluteMin) {
+            	printVisualizerPath(m, result);
+            	absoluteMin = min;
+            }
+            
             if (min < 1500) {
                 printPath(m, result);
             }
@@ -116,7 +124,7 @@ public class Driver {
             System.out.println(c);
 
         }
-    	printVisualizerPath(m, result);
+    	
 
     }
 
