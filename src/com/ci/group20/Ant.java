@@ -4,6 +4,7 @@ import com.ci.group20.maze.Maze;
 import com.ci.group20.util.Coordinate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Stack;
@@ -34,8 +35,8 @@ public class Ant {
         walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
         Coordinate[] possibilities = new Coordinate[4];
-        float[] accumProbabilities = new float[4];
-        float totalPheromone;
+        double[] accumProbabilities = new double[4];
+        double totalPheromone;
 
         int i = 0;
         while (!walkedPath.peek().equals(target)) {
@@ -70,20 +71,22 @@ public class Ant {
 
             totalPheromone = 0;
             for (Coordinate possible : possibilities) {
-                if (possible != null) {
+                if (possible != null && possible != prev) {
                     totalPheromone += Math.max(0, maze.getCellPheromone(possible));
                 }
             }
-            accumProbabilities[0] = (possibilities[0] != null && possibilities[0] != prev ? Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone : 0);
-            accumProbabilities[1] = accumProbabilities[0] +
-                    (possibilities[1] != null && possibilities[1] != prev ? Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone : 0);
-            accumProbabilities[2] = accumProbabilities[1] +
-                    (possibilities[2] != null && possibilities[2] != prev ? Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone : 0);
-            accumProbabilities[3] = accumProbabilities[2] +
-                    (possibilities[3] != null && possibilities[3] != prev ? Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone : 0);
 
-            float prob = random.nextFloat();
+            accumProbabilities[0] = ((possibilities[0] != null && possibilities[0] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone) : 0);
+            accumProbabilities[1] = accumProbabilities[0] +
+                    ((possibilities[1] != null && possibilities[1] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone) : 0);
+            accumProbabilities[2] = accumProbabilities[1] +
+                    ((possibilities[2] != null && possibilities[2] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone) : 0);
+            accumProbabilities[3] = accumProbabilities[2] +
+                    ((possibilities[3] != null && possibilities[3] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone) : 0);
+
+            double prob = random.nextDouble();
             int idx;
+
             for (idx = 0; idx < accumProbabilities.length; idx++) {
                 if (prob < accumProbabilities[idx]) {
                     break;
@@ -91,7 +94,8 @@ public class Ant {
             }
 
             if (idx >= possibilities.length || possibilities[idx] == null) {
-                walkedPath.push(prev);
+                maze.setCellPheromone(coordinate, -1.f);
+                walkedPath.pop();
                 continue;
             }
 
@@ -110,7 +114,7 @@ public class Ant {
         for (Coordinate c : walkedPath) {
             if (!cache.contains(c)) {
                 cache.add(c);
-                maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 8) + maze.getCellPheromone(c));
+                maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 6) + maze.getCellPheromone(c));
             } else {
                 maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.9999f);
             }

@@ -35,9 +35,9 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 1000000;
-    public static final int NUMBER_OF_ANTS = 45;
+    public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 400f;
-    public static final double EVAPORATION = 0.04f;
+    public static final double EVAPORATION = 0.008f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -67,10 +67,11 @@ public class Driver {
         int i;
         Stack<Coordinate> result = new Stack<>();
 
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < 10; i++) {
             ants.get(0).find(target);
             System.out.println("PRELOAD: " + ants.get(0).spreadPheromone(PHEROMONE));
         }
+        //System.out.println(m);
 
         for (i = 0; i < MAX_ITERATIONS; i++) {
             ants.parallelStream().forEach(
@@ -82,19 +83,21 @@ public class Driver {
             m.evaporate(EVAPORATION);
             List<Integer> lens = ants.stream().map(
                     (Ant ant) -> {
-                            return ant.spreadPheromone(PHEROMONE);
+                        return ant.spreadPheromone(PHEROMONE);
                     }
             ).collect(Collectors.toList());
             System.out.println(
-                    lens.stream()
+                    lens.parallelStream()
                             .reduce(Integer::sum)
                             .get() / lens.size());
             int min = lens.parallelStream()
                     .min(Integer::compare)
                     .get();
             System.out.println(min);
-            if (min < 300) {
-                result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
+            result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
+            //printPath(m, result);
+            if (min < 3000) {
+                printPath(m, result);
                 break;
             }
 
@@ -102,11 +105,32 @@ public class Driver {
                 System.out.println("FOUND OPTIMUM");
                 break;
             }*/
+
+            //System.out.println(m);
         }
         System.out.println("CONVERGED IN " + i);
         for (Coordinate c : result) {
             System.out.println(c);
         }
+    }
+
+    static void printPath(Maze m, Stack<Coordinate> path) {
+        int[][] out = new int[m.size().x][m.size().y];
+
+        for (Coordinate c : path) {
+            out[c.x][c.y] += 1;
+        }
+
+        StringBuilder res = new StringBuilder("");
+
+        for (int[] row : out) {
+            for (int cell : row) {
+                res.append(cell);
+                res.append(' ');
+            }
+            res.append(";\n");
+        }
+        System.out.println(res.toString());
     }
 
 }

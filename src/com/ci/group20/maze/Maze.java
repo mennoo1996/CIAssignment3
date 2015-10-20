@@ -56,7 +56,7 @@ public class Maze {
                 res.append(cell);
                 res.append(' ');
             }
-            res.append('\n');
+            res.append(";\n");
         }
     	return res.toString();
     }
