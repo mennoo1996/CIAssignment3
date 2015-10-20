@@ -32,10 +32,10 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 10000;
-    public static final int NUMBER_OF_ANTS = 1000;
+    public static final int MAX_ITERATIONS = 1000;
+    public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 50f;
-    public static final double EVAPORATION = 0.02f;
+    public static final double EVAPORATION = 0.03f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -62,18 +62,25 @@ public class Driver {
         }
 
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
-        for (int i = 0; i < MAX_ITERATIONS; i++) {
-            ants.stream().forEach(ant -> ant.find(target));
+        int i;
+        for (i = 0; i < MAX_ITERATIONS; i++) {
+            ants.parallelStream().forEach(ant -> ant.find(target));
             System.out.println("ITER");
             m.evaporate(EVAPORATION);
-            List<Integer> lens = ants.parallelStream().map((ant) -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
+            List<Integer> lens = ants.stream().map((ant) -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
             System.out.println(lens.stream().reduce(Integer::sum).get() / lens.size());
-            System.out.println(lens.parallelStream().min(Integer::compare).get());
+            int min = lens.parallelStream().min(Integer::compare).get();
+            System.out.println(min);
+            if (min < 60) {
+                break;
+            }
+
            /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
                 System.out.println("FOUND OPTIMUM");
                 break;
             }*/
         }
+        System.out.println("CONVERGED IN " + i);
     }
 
 }
