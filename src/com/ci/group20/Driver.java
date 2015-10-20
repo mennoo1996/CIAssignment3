@@ -35,9 +35,9 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 1000000;
-    public static final int NUMBER_OF_ANTS = 100;
+    public static final int NUMBER_OF_ANTS = 300;
     public static final float PHEROMONE = 400f;
-    public static final double EVAPORATION = 0.013f;
+    public static final double EVAPORATION = 0.02f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
@@ -96,7 +96,7 @@ public class Driver {
             System.out.println(min);
             result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
             //printPath(m, result);
-            if (min < 2000) {
+            if (min < 1500) {
                 printPath(m, result);
             }
             if (min < 300) break;
