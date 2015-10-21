@@ -48,6 +48,21 @@ public class Ant {
             if (!walkedPath.empty()) {
                 prev = walkedPath.peek();
             }
+            
+            /**'
+             * Diego's code, to get out double laying of pheromone when walking circles
+             */
+            
+            if(walkedPath.contains(coordinate)){
+            	
+            	while(!walkedPath.peek().equals(coordinate)){
+            		
+            		walkedPath.pop();
+            		
+            	}
+            	walkedPath.pop();            	
+            	
+            }
             walkedPath.push(coordinate);
 
             if (coordinate.x - 1 >= 0) {
@@ -105,6 +120,9 @@ public class Ant {
                 int v = 1 + 1;
             }
             
+            /**
+             * Diego's code, closes off all openspaces at the left
+             */
             
             boolean checkdirect = true;
             
@@ -121,8 +139,11 @@ public class Ant {
             			if(coordinate.x-spacesahead >= 0 && 
             					maze.getCellPheromone(Coordinate.get(coordinate.x-spacesahead, coordinate.y)) >= 0f && 
             					!Coordinate.get(Driver.ENDING_X, Driver.ENDING_Y).equals(Coordinate.get(coordinate.x-1, coordinate.y))&&
-            					UpDownFree(coordinate.x, coordinate.y) &&
-            					UpDownFree(coordinate.x-spacesahead, coordinate.y))
+            					UpDownFree(coordinate.x, coordinate.y) >= 0 &&
+            					UpDownFree(coordinate.x-spacesahead, coordinate.y) >= 0&&
+            					UpDownFree(coordinate.x-spacesahead -1, coordinate.y) >= 0 &&
+            					UpDownFree(coordinate.x-spacesahead -1, coordinate.y) == UpDownFree(coordinate.x-spacesahead, coordinate.y) &&
+            					UpDownFree(coordinate.x, coordinate.y) == UpDownFree(coordinate.x-spacesahead, coordinate.y))
             			{
             				
             			    maze.setCellPheromone(Coordinate.get(coordinate.x-spacesahead, coordinate.y), -1f);   
@@ -136,7 +157,7 @@ public class Ant {
             			}
             		
             			break;
-            	case 1:
+            	/*case 1:
             		
         			if(coordinate.x+spacesahead < maze.size().x && 
         					maze.getCellPheromone(Coordinate.get(coordinate.x+spacesahead, coordinate.y)) >= 0f && 
@@ -155,7 +176,7 @@ public class Ant {
         				checkdirect = false;
         			}
         		
-        			break;
+        			break;*/
             		default:
             			checkdirect = false;
             			break;
@@ -163,6 +184,7 @@ public class Ant {
             	//System.gc();
             }
             //System.out.println("Diego's while-loop break");
+            
             
             
             walkedPath.push(possibilities[idx]);
@@ -186,31 +208,31 @@ public class Ant {
     
     
 
-    public boolean UpDownFree(Coordinate cord){
+    public int UpDownFree(Coordinate cord){
     	
     if(cord.x > 0 && cord.x < maze.size().x){	
     	if(cord.y-1 > 0 && cord.y+1 < maze.size().y){
     		
-    		/*if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) < 0){
+    		if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) < 0){
     			
-    			return true;
+    			return 0;
     			
     		}
     		else if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) < 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) > 0){
     			
-    			return true;
+    			return 1;
     			
     		}
-    		else */if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) > 0){
+    		else if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) > 0){
     	
-    			return true;
+    			return 2;
     		}
     	}
     }
-    return false;
+    return -1;
     }
     
-    public boolean UpDownFree(int x, int y){
+    public int UpDownFree(int x, int y){
     	
     	return UpDownFree(Coordinate.get(x, y));
     	
