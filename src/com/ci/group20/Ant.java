@@ -136,6 +136,26 @@ public class Ant {
             			}
             		
             			break;
+            	case 1:
+            		
+        			if(coordinate.x+spacesahead < maze.size().x && 
+        					maze.getCellPheromone(Coordinate.get(coordinate.x+spacesahead, coordinate.y)) >= 0f && 
+        					!Coordinate.get(Driver.ENDING_X, Driver.ENDING_Y).equals(Coordinate.get(coordinate.x+1, coordinate.y))&&
+        					UpDownFree(coordinate.x, coordinate.y) &&
+        					UpDownFree(coordinate.x+spacesahead, coordinate.y))
+        			{
+        				
+        			    maze.setCellPheromone(Coordinate.get(coordinate.x+spacesahead, coordinate.y), -1f);   
+
+                		System.out.println("Closed " + Coordinate.get(coordinate.x+spacesahead, coordinate.y));
+                		spacesahead++;
+        			
+        			}
+        			else{
+        				checkdirect = false;
+        			}
+        		
+        			break;
             		default:
             			checkdirect = false;
             			break;

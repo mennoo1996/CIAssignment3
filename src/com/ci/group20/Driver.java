@@ -37,7 +37,7 @@ public class Driver {
     public static final int MAX_ITERATIONS = 50;
     public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 400f;
-    public static final double EVAPORATION = 0.02f;
+    public static final double EVAPORATION = 0.1f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
