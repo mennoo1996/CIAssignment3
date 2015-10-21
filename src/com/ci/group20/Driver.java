@@ -35,7 +35,7 @@ public class Driver {
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
     public static final int MAX_ITERATIONS = 50;
-    public static final int NUMBER_OF_ANTS = 300;
+    public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 400f;
     public static final double EVAPORATION = 0.02f;
     public static final double CONVERGENCE_CRITERIA = 1;
@@ -150,7 +150,7 @@ public class Driver {
     static void printVisualizerPath(Maze m, Stack<Coordinate> path) {
     	PrintWriter writer = null;
     	try {
-    		writer = new PrintWriter(new FileWriter("visualizerOutput.txt"));
+    		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
     		
 	    	
 	    	writer.println(path.size() + ";");

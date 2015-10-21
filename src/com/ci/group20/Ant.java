@@ -140,7 +140,7 @@ public class Ant {
             			checkdirect = false;
             			break;
             	}
-            	System.gc();
+            	//System.gc();
             }
             //System.out.println("Diego's while-loop break");
             
