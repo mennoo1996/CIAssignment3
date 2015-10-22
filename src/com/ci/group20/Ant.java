@@ -34,7 +34,7 @@ public class Ant {
 
     public void find(Coordinate target) {
         walkedPath.clear();
-        System.out.println(startingPosition);
+        //System.out.println(startingPosition);
         walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
         Coordinate[] possibilities = new Coordinate[4];
@@ -43,7 +43,7 @@ public class Ant {
 
         int i = 0;
         while (!walkedPath.peek().equals(target)) {
-        	System.out.println("WHILE LOOP FIND");
+        	//System.out.println("INITIATE WHILE");
             i++;
             Coordinate coordinate = walkedPath.pop();
             Coordinate prev = null;
@@ -114,7 +114,10 @@ public class Ant {
 
             if (idx >= possibilities.length || possibilities[idx] == null) {
                 maze.setCellPheromone(coordinate, -1.f);
-                walkedPath.pop();
+                //System.out.println("POP HERE");
+                //if (walkedPath.size()>1) {
+                	walkedPath.pop();
+               // }
                 continue;
             }
 
@@ -188,8 +191,10 @@ public class Ant {
             //System.out.println("Diego's while-loop break");
             
             
-            
+           // System.out.println("PUSH HERE");
+            //System.out.println(possibilities[idx]);
             walkedPath.push(possibilities[idx]);
+           // System.out.println("WALKEDPATH" + walkedPath);
         }
         System.gc();
         //System.out.printf("Found coord in %d iteration\n", i);

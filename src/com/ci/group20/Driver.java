@@ -41,9 +41,9 @@ public class Driver {
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
-    public static final int STARTING_Y = 19;
-    public static final int ENDING_X = 11;
-    public static final int ENDING_Y = 53;
+    public static final int STARTING_Y = 0;
+    public static final int ENDING_X = 58;
+    public static final int ENDING_Y = 55;
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
@@ -124,7 +124,8 @@ public class Driver {
             if (min < 1500) {
                 printPath(m, result);
             }
-            if (min < 300) break;
+            // Menno: Outcommented the break for tsp.
+            //if (min < 300) break;
            
 
            /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
@@ -159,7 +160,7 @@ public class Driver {
             }
             res.append(";\n");
         }
-        System.out.println(res.toString());
+        //System.out.println(res.toString());
     }
     
     static void printVisualizerPath(Maze m, Stack<Coordinate> path) {
