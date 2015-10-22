@@ -34,7 +34,7 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 50;
+    public static final int MAX_ITERATIONS = 10;
     public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 400f;
     public static final double EVAPORATION = 0.1f;
@@ -47,11 +47,26 @@ public class Driver {
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello World");
-        System.out.println("Yoooooooooooo");
+        Stack<Coordinate> result = computePath(STARTING_X, STARTING_Y, ENDING_X, ENDING_Y, MAZE_NAME, MAX_ITERATIONS, NUMBER_OF_ANTS, PHEROMONE, EVAPORATION);
+        System.out.println("RESULT PRINT NOW");
+        System.out.println(result);
+        
+    	
 
-        MazeParser parser = new MazeParser();
-        Maze m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
+    }
+    
+    public static Stack<Coordinate> computePath(int STARTING_X, int STARTING_Y, int ENDING_X, int ENDING_Y, String MAZE_NAME,
+    		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION) {
+    	
+    	MazeParser parser = new MazeParser();
+    	Maze m = null;
+    	try {
+    		m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
+    	}
+    		
+		catch (IOException e) {
+			System.out.println(e.getStackTrace());
+		}
         //System.out.println(m.toString());
 
         
@@ -124,8 +139,8 @@ public class Driver {
             System.out.println(c);
 
         }
+        return result;
     	
-
     }
 
     static void printPath(Maze m, Stack<Coordinate> path) {
