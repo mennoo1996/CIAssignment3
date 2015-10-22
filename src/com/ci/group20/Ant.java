@@ -124,7 +124,7 @@ public class Ant {
              * Diego's code, closes off all openspaces at the left
              */
             
-            boolean checkdirect = true;
+           /* boolean checkdirect = true;
             
             int spacesahead = 1;
             
@@ -177,12 +177,12 @@ public class Ant {
         			}
         		
         			break;*/
-            		default:
+            		/*default:
             			checkdirect = false;
             			break;
             	}
             	//System.gc();
-            }
+            }*/
             //System.out.println("Diego's while-loop break");
             
             
