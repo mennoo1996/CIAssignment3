@@ -42,9 +42,9 @@ public class Driver {
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
     public static final int STARTING_X = 0;
-    public static final int STARTING_Y = 0;
-    public static final int ENDING_X = 58;
-    public static final int ENDING_Y = 55;
+    public static final int STARTING_Y = 19;
+    public static final int ENDING_X = 11;
+    public static final int ENDING_Y = 13;
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {

@@ -45,7 +45,7 @@ public class Ant {
        // try {
 	        while (!walkedPath.get(walkedPath.size()-1).equals(target)) {
 	        	
-	        	System.out.println("Size at the start of loop is " + walkedPath.size());
+	        	//System.out.println("Size at the start of loop is " + walkedPath.size());
 	        	//System.out.println("INITIATE WHILE");
 	            i++;
 	            Coordinate coordinate = walkedPath.pop();
@@ -122,7 +122,14 @@ public class Ant {
 	                maze.setCellPheromone(coordinate, -1.f);
 	                //System.out.println("POP HERE");
 	                //if (walkedPath.size()>1) {
+	               
 	                	walkedPath.pop();
+	                	if (walkedPath.isEmpty()) {
+	                		walkedPath.push(startingPosition);
+	                	}
+	                
+	                	
+	                	//System.out.println("SIZE AT THIS END IS" + walkedPath.size());
 	               // }
 	                continue;
 	            }
@@ -202,7 +209,7 @@ public class Ant {
 	            walkedPath.push(possibilities[idx]);
 	           // System.out.println("WALKEDPATH" + walkedPath);
 	            //System.out.println("EMPTY " + walkedPath.isEmpty());
-	            System.out.println("Size at the end of loop is " + walkedPath.size());
+	            //System.out.println("Size at the end of loop is " + walkedPath.size());
 	        }
 //        } catch (EmptyStackException e) {
 //        	System.out.println(walkedPath);
