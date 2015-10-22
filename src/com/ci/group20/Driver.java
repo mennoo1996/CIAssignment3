@@ -171,7 +171,7 @@ public class Driver {
     		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
     		
 	    	
-	    	writer.println(path.size() + ";");
+	    	writer.println(path.size()-1 + ";");
 	    	writer.println(STARTING_X + ", " + STARTING_Y + ";");
 	    	Coordinate prevCoord = null;
 	    	for (int i = 0;i<path.size();i++) {
