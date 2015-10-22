@@ -34,6 +34,7 @@ public class Ant {
 
     public void find(Coordinate target) {
         walkedPath.clear();
+        System.out.println(startingPosition);
         walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
         Coordinate[] possibilities = new Coordinate[4];
@@ -42,6 +43,7 @@ public class Ant {
 
         int i = 0;
         while (!walkedPath.peek().equals(target)) {
+        	System.out.println("WHILE LOOP FIND");
             i++;
             Coordinate coordinate = walkedPath.pop();
             Coordinate prev = null;
