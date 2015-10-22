@@ -5,9 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Stack;
+import java.util.EmptyStackException;
 
 import com.ci.group20.util.Coordinate;
 import com.ci.group20.util.CoordinatePair;
@@ -20,7 +20,7 @@ public class TSP {
 	private static final float BETA = 0.5f;
 	private static final int PHEROMONE_CONSTANT = 300;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws EmptyStackException {
 		Random random = new Random();
 		int min = Integer.MAX_VALUE;
 		ArrayList<Integer> minPathVertices = new ArrayList<Integer>();

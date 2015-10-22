@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -56,7 +57,7 @@ public class Driver {
     }
     
     public static Stack<Coordinate> computePath(int STARTING_X, int STARTING_Y, int ENDING_X, int ENDING_Y, String MAZE_NAME,
-    		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION) {
+    		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION) throws EmptyStackException {
     	
     	MazeParser parser = new MazeParser();
     	Maze m = null;
@@ -81,6 +82,7 @@ public class Driver {
         }
 
         Coordinate target = Coordinate.get(ENDING_X, ENDING_Y);
+        System.out.println("TARGET " + target);
         int i;
         Stack<Coordinate> result = new Stack<>();
 
