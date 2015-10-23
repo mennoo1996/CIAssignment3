@@ -35,7 +35,7 @@ public class Driver {
 
     // Please note that these numbers are probably bullshit, as I have
     // no idea what half of these things mean
-    public static final int MAX_ITERATIONS = 10;
+    public static final int MAX_ITERATIONS = 100;
     public static final int NUMBER_OF_ANTS = 100;
     public static final float PHEROMONE = 400f;
     public static final double EVAPORATION = 0.1f;
@@ -43,9 +43,9 @@ public class Driver {
     // Starting and ending point variables
     public static final int STARTING_X = 0;
     public static final int STARTING_Y = 0;
-    public static final int ENDING_X = 79;
-    public static final int ENDING_Y = 79;
-    private static final String MAZE_NAME = "hard";
+    public static final int ENDING_X = 1;
+    public static final int ENDING_Y = 88;
+    private static final String MAZE_NAME = "insane";
 
     public static void main(String[] args) throws IOException {
         Stack<Coordinate> result = computePath(STARTING_X, STARTING_Y, ENDING_X, ENDING_Y, MAZE_NAME, MAX_ITERATIONS, NUMBER_OF_ANTS, PHEROMONE, EVAPORATION);

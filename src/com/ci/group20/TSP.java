@@ -25,7 +25,7 @@ public class TSP {
 
 	private static final String MAZE = "hard";
 	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
-	private static final int ANTS = 10000;
+	private static final int ANTS = 20000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
 	private static final int PHEROMONE_CONSTANT = 30000;
@@ -52,7 +52,7 @@ public class TSP {
 			// For each other product
 			for (int j=i+1 ; j<products.size();j++) {
 				// Compute the path from product i to product j, using the code from part 1 (Driver class)
-				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 2, 50, 400, 0.1);
+				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1);
 				// Create the correct CoordinatePair
 				CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 				// Reversed pair because the walking order doesn't matter for size and pheromone
