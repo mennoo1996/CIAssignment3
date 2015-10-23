@@ -34,7 +34,7 @@ public class Driver {
 	 */
 
     // The maximum amount of iterations that the ants will be simulated
-    public static final int MAX_ITERATIONS = 10;
+    public static final int MAX_ITERATIONS = 100;
 
     // The number of ants that are simulated
     public static final int NUMBER_OF_ANTS = 100;
@@ -51,6 +51,7 @@ public class Driver {
     // Starting and ending point variables
     public static final int STARTING_X = 0;
     public static final int STARTING_Y = 0;
+
     public static final int ENDING_X = 79;
     public static final int ENDING_Y = 79;
 
@@ -150,36 +151,41 @@ public class Driver {
     static void printVisualizerPath(Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
     	PrintWriter writer = null;
     	try {
-    		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
-    		
+    		writer = new PrintWriter(new FileWriter("TSPOutput.txt"));
+
 	    	ArrayList<String> outputLines = new ArrayList<>();
 	    	outputLines.add(path.size() - 1 + ";");
 	    	outputLines.add(STARTING_X + ", " + STARTING_Y + ";");
-	    	Coordinate prevCoord = null;
-	    	for (int i = 0;i<path.size();i++) {
+	    	Coordinate prevCoord = path.get(0);
+	    	outputLines.add("take product #" + prevCoord.y + ";");
+	    	for (int i = 1;i<path.size();i++) {
 	    		Coordinate coord = path.get(i);
-	    		if (i==0) {
-	    			prevCoord = coord;
+	    		if (coord.x == Integer.MAX_VALUE) {
+	    			outputLines.add("take product #" + coord.y + ";");
 	    		} else {
-	    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
-	    				outputLines.add("1;");
-	    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
-	    				outputLines.add("3;");
-	    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
-	    				outputLines.add("2;");
-	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
-	    				outputLines.add("0;");
-	    			} else {
-	    				String sizeString = outputLines.get(0);
-	    				String[] splittedSize = sizeString.split(";");
-	    				int size = Integer.parseInt(splittedSize[0]);
-	    				size--;
-	    				outputLines.remove(0);
-	    				outputLines.add(0, size + ";");
-	    			}
-	    			prevCoord = coord;
+	    			if (i==0) {
+		    			prevCoord = coord;
+		    		} else {
+		    			
+		    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
+		    				outputLines.add("1;");
+		    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
+		    				outputLines.add("3;");
+		    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
+		    				outputLines.add("2;");
+		    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
+		    				outputLines.add("0;");
+		    			} else {
+		    				String sizeString = outputLines.get(0);
+		    				String[] splittedSize = sizeString.split(";");
+		    				int size = Integer.parseInt(splittedSize[0]);
+		    				size--;
+		    				outputLines.remove(0);
+		    				outputLines.add(0, size + ";");
+		    			}
+		    			prevCoord = coord;
+		    		}
 	    		}
-	    		
 	    	}
             outputLines.forEach(writer::println);
     	} catch (IOException e) {

@@ -25,10 +25,10 @@ public class TSP {
 
 	private static final String MAZE = "hard";
 	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
-	private static final int ANTS = 5000;
+	private static final int ANTS = 20000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
-	private static final int PHEROMONE_CONSTANT = 300;
+	private static final int PHEROMONE_CONSTANT = 30000;
 
 	
 	public static void main(String[] args) throws EmptyStackException {
@@ -178,6 +178,8 @@ public class TSP {
 		// This will contain the full minimal route, which will be outputted to file
 		Stack<Coordinate> minRoute = new Stack<Coordinate>();
 		
+		minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(0)));
+		
 		// For each vertex in the minimal path
 		for (int i=1;i<minPathVertices.size();i++) {
 			// Reversed is used to check if the route stack should be read the other way around
@@ -206,12 +208,15 @@ public class TSP {
 				for (int p = 0; p<j; p++) {
 					minRoute.push(reversedPath.pop());
 				}
+				minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(i)));
 			} else {
 				// Add stack to minRoute
 				int j = partRoute.size();
 				for (int p = 0;p<j;p++) {
 					minRoute.push(partRoute.pop());
 				}
+				minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(i)));
+
 			}
 			// Print the path in the correct format
 			Driver.printVisualizerPath(minRoute, products.get(minPathVertices.get(0)).x, products.get(minPathVertices.get(0)).y);	
