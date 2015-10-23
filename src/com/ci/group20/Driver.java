@@ -41,10 +41,10 @@ public class Driver {
     public static final double EVAPORATION = 0.1f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
-    public static final int STARTING_X = 75;
-    public static final int STARTING_Y = 72;
+    public static final int STARTING_X = 0;
+    public static final int STARTING_Y = 0;
     public static final int ENDING_X = 79;
-    public static final int ENDING_Y = 0;
+    public static final int ENDING_Y = 79;
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
@@ -119,7 +119,7 @@ public class Driver {
             result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
             //printPath(m, result);
             if (min < absoluteMin) {
-            	printVisualizerPath(m, result);
+            	printVisualizerPath(m, result, STARTING_X, STARTING_Y);
             	absoluteMin = min;
             }
             
@@ -217,7 +217,7 @@ public class Driver {
     	}
     }
     
-    static void printVisualizerPath(Maze m, Stack<Coordinate> path) {
+    static void printVisualizerPath(Maze m, Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
     	PrintWriter writer = null;
     	try {
     		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));

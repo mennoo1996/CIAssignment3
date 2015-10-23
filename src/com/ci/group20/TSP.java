@@ -19,6 +19,7 @@ public class TSP {
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
 	private static final int PHEROMONE_CONSTANT = 300;
+	private static final String MAZE = "hard";
 	
 	public static void main(String[] args) throws EmptyStackException {
 		Random random = new Random();
@@ -47,7 +48,7 @@ public class TSP {
 					System.out.println("STARTING Y " + products.get(i).y);
 					System.out.println("ENDING X " + products.get(j).x);
 					System.out.println("ENDING Y " + products.get(j).y);
-					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, "hard", 10, 100, 400, 0.1);
+					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1);
 					CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 					routes.put(pair, route);
 					route_sizes.put(pair, route.size());
