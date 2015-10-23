@@ -191,7 +191,7 @@ public class Driver {
 	    				toPrint.add("2;");
 	    				//writer.println("2;");
 	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
-	    				toPrint.add("0");
+	    				toPrint.add("0;");
 	    				//writer.println("0;");
 	    			} else {
 	    				String sizeString = toPrint.get(0);

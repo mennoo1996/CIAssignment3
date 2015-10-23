@@ -14,7 +14,7 @@ import com.ci.group20.util.CoordinatePair;
 
 public class TSP {
 	
-	private static final String PRODUCTS_FILEPATH = "mazes/menno_products.txt";
+	private static final String PRODUCTS_FILEPATH = "mazes/medium_products.txt";
 	private static final int ANTS = 5000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
@@ -47,7 +47,7 @@ public class TSP {
 					System.out.println("STARTING Y " + products.get(i).y);
 					System.out.println("ENDING X " + products.get(j).x);
 					System.out.println("ENDING Y " + products.get(j).y);
-					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, "menno", 10, 100, 400, 0.1);
+					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, "medium", 10, 100, 400, 0.1);
 					CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 					routes.put(pair, route);
 					route_sizes.put(pair, route.size());

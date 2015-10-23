@@ -60,18 +60,18 @@ public class Ant {
 	             * Diego's code, to get out double laying of pheromone when walking circles
 	             */
 	            
-//	            if(walkedPath.contains(coordinate)){
-//	            	try {
-//	            	while(!walkedPath.peek().equals(coordinate)){
-//	            		
-//	            		walkedPath.pop();
-//	            		
-//	            	}
-//	            	walkedPath.pop();    } catch (EmptyStackException e) {
-//	            		System.out.println("HIER?");
-//	            	}
-//	            	
-//	            }
+	            if(walkedPath.contains(coordinate)){
+	            	try {
+	            	while(!walkedPath.peek().equals(coordinate)){
+	            		
+	            		walkedPath.pop();
+	            		
+	            	}
+	            	walkedPath.pop();    } catch (EmptyStackException e) {
+	            		System.out.println("HIER?");
+	            	}
+	            	
+	            }
 	            walkedPath.push(coordinate);
 	
 	            if (coordinate.x - 1 >= 0) {
