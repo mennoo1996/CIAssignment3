@@ -44,6 +44,7 @@ public class Ant {
         int i = 0;
        // try {
 	        while (!walkedPath.get(walkedPath.size()-1).equals(target)) {
+	        	//System.out.println(walkedPath);
 	        	
 	        	//System.out.println("Size at the start of loop is " + walkedPath.size());
 	        	//System.out.println("INITIATE WHILE");
@@ -59,18 +60,18 @@ public class Ant {
 	             * Diego's code, to get out double laying of pheromone when walking circles
 	             */
 	            
-	            if(walkedPath.contains(coordinate)){
-	            	try {
-	            	while(!walkedPath.peek().equals(coordinate)){
-	            		
-	            		walkedPath.pop();
-	            		
-	            	}
-	            	walkedPath.pop();    } catch (EmptyStackException e) {
-	            		System.out.println("HIER?");
-	            	}
-	            	
-	            }
+//	            if(walkedPath.contains(coordinate)){
+//	            	try {
+//	            	while(!walkedPath.peek().equals(coordinate)){
+//	            		
+//	            		walkedPath.pop();
+//	            		
+//	            	}
+//	            	walkedPath.pop();    } catch (EmptyStackException e) {
+//	            		System.out.println("HIER?");
+//	            	}
+//	            	
+//	            }
 	            walkedPath.push(coordinate);
 	
 	            if (coordinate.x - 1 >= 0) {

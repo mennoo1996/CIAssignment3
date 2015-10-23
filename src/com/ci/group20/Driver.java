@@ -41,10 +41,10 @@ public class Driver {
     public static final double EVAPORATION = 0.1f;
     public static final double CONVERGENCE_CRITERIA = 1;
     // Starting and ending point variables
-    public static final int STARTING_X = 0;
-    public static final int STARTING_Y = 19;
-    public static final int ENDING_X = 11;
-    public static final int ENDING_Y = 13;
+    public static final int STARTING_X = 75;
+    public static final int STARTING_Y = 72;
+    public static final int ENDING_X = 79;
+    public static final int ENDING_Y = 0;
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
@@ -137,9 +137,9 @@ public class Driver {
 
             //System.out.println(m);
         }
-        System.out.println("CONVERGED IN " + i);
+       // System.out.println("CONVERGED IN " + i);
         for (Coordinate c : result) {
-            System.out.println(c);
+            //System.out.println(c);
 
         }
         return result;
@@ -163,6 +163,58 @@ public class Driver {
             res.append(";\n");
         }
         //System.out.println(res.toString());
+    }
+    
+    static void printVisualizerPath(Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
+    	PrintWriter writer = null;
+    	try {
+    		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
+    		
+	    	ArrayList<String> toPrint = new ArrayList<String>();
+	    	toPrint.add(path.size()-1 + ";");
+	    	toPrint.add(STARTING_X + ", " + STARTING_Y + ";");
+//	    	writer.println(path.size()-1 + ";");
+//	    	writer.println(STARTING_X + ", " + STARTING_Y + ";");
+	    	Coordinate prevCoord = null;
+	    	for (int i = 0;i<path.size();i++) {
+	    		Coordinate coord = path.get(i);
+	    		if (i==0) {
+	    			prevCoord = coord;
+	    		} else {
+	    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
+	    				toPrint.add("1;");
+	    				//writer.println("1;");
+	    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
+	    				toPrint.add("3;");
+	    				//writer.println("3;");
+	    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
+	    				toPrint.add("2;");
+	    				//writer.println("2;");
+	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
+	    				toPrint.add("0");
+	    				//writer.println("0;");
+	    			} else {
+	    				String sizeString = toPrint.get(0);
+	    				String[] splittedSize = sizeString.split(";");
+	    				int size = Integer.parseInt(splittedSize[0]);
+	    				size--;
+	    				toPrint.remove(0);
+	    				toPrint.add(0, size + ";");
+	    			}
+	    			prevCoord = coord;
+	    		}
+	    		
+	    	}
+	    	for (int i=0;i<toPrint.size();i++) {
+	    		writer.println(toPrint.get(i));
+	    	}
+    	} catch (IOException e) {
+    		
+    	} finally {
+    		if (writer!=null) {
+    			writer.close();
+    		}
+    	}
     }
     
     static void printVisualizerPath(Maze m, Stack<Coordinate> path) {

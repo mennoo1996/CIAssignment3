@@ -14,7 +14,7 @@ import com.ci.group20.util.CoordinatePair;
 
 public class TSP {
 	
-	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
+	private static final String PRODUCTS_FILEPATH = "mazes/menno_products.txt";
 	private static final int ANTS = 5000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
@@ -33,7 +33,7 @@ public class TSP {
 			System.out.println("OUTER LOOP " + i);
 			for (int j=i+1 ; j<products.size();j++) {
 				System.out.println("INNER LOOP " + j);
-				if (i==2 && j==3) {
+				if (false) {
 					Stack<Coordinate> route = new Stack<Coordinate>();
 					CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 					routes.put(pair, route);
@@ -47,7 +47,7 @@ public class TSP {
 					System.out.println("STARTING Y " + products.get(i).y);
 					System.out.println("ENDING X " + products.get(j).x);
 					System.out.println("ENDING Y " + products.get(j).y);
-					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, "hard", 1, 10, 400, 0.1);
+					Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, "menno", 10, 100, 400, 0.1);
 					CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 					routes.put(pair, route);
 					route_sizes.put(pair, route.size());
@@ -220,6 +220,42 @@ public class TSP {
 		
 		System.out.println("MIN PATH" + minPathVertices);
 		System.out.println("MIN" + min);
+		
+		Stack<Coordinate> minRoute = new Stack<Coordinate>();
+		
+		for (int i=1;i<minPathVertices.size();i++) {
+			boolean reversed = false;
+			System.out.println("PART ROUTE BEGIN" + routes.get(new CoordinatePair(products.get(minPathVertices.get(i-1)), products.get(minPathVertices.get(i)))));
+			Stack<Coordinate> partRoute = routes.get(new CoordinatePair(products.get(minPathVertices.get(i-1)), products.get(minPathVertices.get(i))));
+			if (partRoute == null) {
+				
+				partRoute = routes.get(new CoordinatePair(products.get(minPathVertices.get(i)), products.get(minPathVertices.get(i-1))));
+				System.out.println("PART ROUTE AFTER NULL" + routes.get(new CoordinatePair(products.get(i), products.get(i-1))));
+				reversed = true;
+			}
+			if (!reversed) {
+				int j = partRoute.size();
+				Stack<Coordinate> reversedPath = new Stack<Coordinate>();
+				for (int p = 0 ; p<j ; p++) {
+					reversedPath.push(partRoute.pop());
+				}
+				for (int p = 0; p<j; p++) {
+					minRoute.push(reversedPath.pop());
+				}
+			} else {
+				int j = partRoute.size();
+				for (int p = 0;p<j;p++) {
+					minRoute.push(partRoute.pop());
+				}
+			}
+			
+			System.out.println(minRoute);
+			Driver.printVisualizerPath(minRoute, products.get(minPathVertices.get(0)).x, products.get(minPathVertices.get(0)).y);
+			
+			
+		}
+		
+		
 		
 		
 	}
