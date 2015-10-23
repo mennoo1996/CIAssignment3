@@ -119,7 +119,7 @@ public class Driver {
             result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
             //printPath(m, result);
             if (min < absoluteMin) {
-            	printVisualizerPath(m, result);
+            	printVisualizerPath(m, result, STARTING_X, STARTING_Y);
             	absoluteMin = min;
             }
             
@@ -217,7 +217,7 @@ public class Driver {
     	}
     }
     
-    static void printVisualizerPath(Maze m, Stack<Coordinate> path) {
+    static void printVisualizerPath(Maze m, Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
     	PrintWriter writer = null;
     	try {
     		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
