@@ -18,8 +18,28 @@ public class Ant {
     private Coordinate startingPosition;
     private Stack<Coordinate> walkedPath;
     private ArrayList<String> movement;
+    private HashSet<Coordinate> avoid;
+    private boolean efficient = false;
+
+    private void makeEfficient() {
+        if (!efficient) {
+            Stack<Coordinate> route = new Stack<>();
+            for (Coordinate c : walkedPath) {
+                if (!route.contains(c)) {
+                    route.push(c);
+                } else {
+                    while (!route.peek().equals(c)) {
+                        route.pop();
+                    }
+                }
+            }
+            walkedPath = route;
+            efficient = true;
+        }
+    }
 
     public Stack<Coordinate> getPath() {
+        makeEfficient();
         return walkedPath;
     }
 
@@ -30,9 +50,12 @@ public class Ant {
         walkedPath = new Stack<>();
         walkedPath.push(position);
         movement = new ArrayList<String>();
+        avoid = new HashSet<>();
     }
 
     public void find(Coordinate target) throws EmptyStackException {
+        efficient = false;
+        avoid.clear();
         walkedPath.clear();
         //System.out.println(startingPosition);
         walkedPath.push(startingPosition);
@@ -43,14 +66,14 @@ public class Ant {
 
         int i = 0;
        // try {
-	        while (!walkedPath.get(walkedPath.size()-1).equals(target)) {
+	        while (!walkedPath.peek().equals(target)) {
 	        	//System.out.println(walkedPath);
 	        	
 	        	//System.out.println("Size at the start of loop is " + walkedPath.size());
 	        	//System.out.println("INITIATE WHILE");
 	            i++;
 	            Coordinate coordinate = walkedPath.pop();
-	            Coordinate prev = null;
+                Coordinate prev = null;
 	           
 	            if (!walkedPath.isEmpty()) {
 	                prev = walkedPath.peek();
@@ -59,19 +82,6 @@ public class Ant {
 	            /**'
 	             * Diego's code, to get out double laying of pheromone when walking circles
 	             */
-	            
-	            if(walkedPath.contains(coordinate)){
-	            	try {
-	            	while(!walkedPath.peek().equals(coordinate)){
-	            		
-	            		walkedPath.pop();
-	            		
-	            	}
-	            	walkedPath.pop();    } catch (EmptyStackException e) {
-	            		System.out.println("HIER?");
-	            	}
-	            	
-	            }
 	            walkedPath.push(coordinate);
 	
 	            if (coordinate.x - 1 >= 0) {
@@ -97,30 +107,38 @@ public class Ant {
 	
 	            totalPheromone = 0;
 	            for (Coordinate possible : possibilities) {
-	                if (possible != null && possible != prev) {
+	                if (possible != null && !possible.equals(prev) && !avoid.contains(possible)) {
 	                    totalPheromone += Math.max(0, maze.getCellPheromone(possible));
 	                }
 	            }
 	
-	            accumProbabilities[0] = ((possibilities[0] != null && possibilities[0] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone) : 0);
+	            accumProbabilities[0] = ((possibilities[0] != null && !possibilities[0].equals(prev) && !avoid.contains(possibilities[0])) ? (Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone) : 0);
 	            accumProbabilities[1] = accumProbabilities[0] +
-	                    ((possibilities[1] != null && possibilities[1] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone) : 0);
+	                    ((possibilities[1] != null && !possibilities[1].equals(prev) && !avoid.contains(possibilities[1])) ? (Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone) : 0);
 	            accumProbabilities[2] = accumProbabilities[1] +
-	                    ((possibilities[2] != null && possibilities[2] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone) : 0);
+	                    ((possibilities[2] != null && !possibilities[2].equals(prev) && !avoid.contains(possibilities[2])) ? (Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone) : 0);
 	            accumProbabilities[3] = accumProbabilities[2] +
-	                    ((possibilities[3] != null && possibilities[3] != prev) ? (Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone) : 0);
+	                    ((possibilities[3] != null && !possibilities[3].equals(prev) && !avoid.contains(possibilities[3])) ? (Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone) : 0);
 	
 	            double prob = random.nextDouble();
 	            int idx;
-	
+
+                int acc = 0;
 	            for (idx = 0; idx < accumProbabilities.length; idx++) {
+                    if (possibilities[idx] != null && maze.getCellPheromone(possibilities[idx]) >= 0) {
+                        acc++;
+                    }
 	                if (prob < accumProbabilities[idx]) {
 	                    break;
 	                }
 	            }
+
+                if (acc == 1) {
+                    avoid.add(coordinate);
+                }
 	
 	            if (idx >= possibilities.length || possibilities[idx] == null) {
-	                maze.setCellPheromone(coordinate, -1.f);
+	                avoid.add(coordinate);
 	                //System.out.println("POP HERE");
 	                //if (walkedPath.size()>1) {
 	               
@@ -222,8 +240,9 @@ public class Ant {
     }
 
     public int spreadPheromone(float amount) {
+        makeEfficient();
         HashSet<Coordinate> cache = new HashSet<>();
-        for (Coordinate c : walkedPath) {
+        for (Coordinate c : this.walkedPath) {
             if (!cache.contains(c)) {
                 cache.add(c);
                 maze.setCellPheromone(c, amount / (float)Math.pow(walkedPath.size(), 6) + maze.getCellPheromone(c));
@@ -231,7 +250,7 @@ public class Ant {
                 maze.setCellPheromone(c, maze.getCellPheromone(c) * 0.999f);
             }
         }
-        return walkedPath.size();
+        return this.walkedPath.size();
     }
     
     
