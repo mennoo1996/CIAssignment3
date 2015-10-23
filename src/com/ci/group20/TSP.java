@@ -22,12 +22,14 @@ import com.ci.group20.util.CoordinatePair;
  */
 public class TSP {
 	
-	private static final String MAZE = "medium";
-	private static final String PRODUCTS_FILEPATH = "mazes/medium_products.txt";
+
+	private static final String MAZE = "hard";
+	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
 	private static final int ANTS = 5000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
 	private static final int PHEROMONE_CONSTANT = 300;
+
 	
 	public static void main(String[] args) throws EmptyStackException {
 		// For random path choosing
