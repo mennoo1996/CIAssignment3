@@ -15,24 +15,7 @@ import com.ci.group20.util.Coordinate;
 
 public class Driver {
 	
-	/*
-	 * Initialize maze
-		Initialize pheromone values
-		For each iteration
-			For each ant
-				While not done
-					Check which directions are viable
-					Choose direction based on pheromone level (use Random)
-					If reached destination
-						Drop appropriate amount of pheromone on walked route
-						// this should not affect the ants still to walk in this
-						// iteraton. Just put all the pheromone together at the
-						// end. But make sure you save it somewhere
-						Set done (return to start point)
-			Put all the pheromone dropped together
-
-	 */
-
+	
     // The maximum amount of iterations that the ants will be simulated
     public static final int MAX_ITERATIONS = 100;
 
