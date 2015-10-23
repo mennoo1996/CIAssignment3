@@ -168,41 +168,49 @@ public class Driver {
     static void printVisualizerPath(Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
     	PrintWriter writer = null;
     	try {
-    		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
+    		writer = new PrintWriter(new FileWriter("TSPOutput.txt"));
     		
 	    	ArrayList<String> toPrint = new ArrayList<String>();
 	    	toPrint.add(path.size()-1 + ";");
 	    	toPrint.add(STARTING_X + ", " + STARTING_Y + ";");
 //	    	writer.println(path.size()-1 + ";");
 //	    	writer.println(STARTING_X + ", " + STARTING_Y + ";");
-	    	Coordinate prevCoord = null;
-	    	for (int i = 0;i<path.size();i++) {
+	    	Coordinate prevCoord = path.get(0);
+	    	toPrint.add("take product #" + prevCoord.y + ";");
+	    	for (int i = 1;i<path.size();i++) {
 	    		Coordinate coord = path.get(i);
-	    		if (i==0) {
-	    			prevCoord = coord;
+	    		
+	    		if (coord.x == Integer.MAX_VALUE) {
+	    			toPrint.add("take product #" + coord.y + ";");
 	    		} else {
-	    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
-	    				toPrint.add("1;");
-	    				//writer.println("1;");
-	    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
-	    				toPrint.add("3;");
-	    				//writer.println("3;");
-	    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
-	    				toPrint.add("2;");
-	    				//writer.println("2;");
-	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
-	    				toPrint.add("0;");
-	    				//writer.println("0;");
-	    			} else {
-	    				String sizeString = toPrint.get(0);
-	    				String[] splittedSize = sizeString.split(";");
-	    				int size = Integer.parseInt(splittedSize[0]);
-	    				size--;
-	    				toPrint.remove(0);
-	    				toPrint.add(0, size + ";");
-	    			}
-	    			prevCoord = coord;
+	    			if (i==0) {
+		    			prevCoord = coord;
+		    		} else {
+		    			
+		    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
+		    				toPrint.add("1;");
+		    				//writer.println("1;");
+		    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
+		    				toPrint.add("3;");
+		    				//writer.println("3;");
+		    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
+		    				toPrint.add("2;");
+		    				//writer.println("2;");
+		    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
+		    				toPrint.add("0;");
+		    				//writer.println("0;");
+		    			} else {
+		    				String sizeString = toPrint.get(0);
+		    				String[] splittedSize = sizeString.split(";");
+		    				int size = Integer.parseInt(splittedSize[0]);
+		    				size--;
+		    				toPrint.remove(0);
+		    				toPrint.add(0, size + ";");
+		    			}
+		    			prevCoord = coord;
+		    		}
 	    		}
+	    		
 	    		
 	    	}
 	    	for (int i=0;i<toPrint.size();i++) {

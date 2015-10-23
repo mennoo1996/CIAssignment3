@@ -25,10 +25,10 @@ public class TSP {
 
 	private static final String MAZE = "hard";
 	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
-	private static final int ANTS = 5000;
+	private static final int ANTS = 10000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
-	private static final int PHEROMONE_CONSTANT = 300;
+	private static final int PHEROMONE_CONSTANT = 30000;
 
 	
 	public static void main(String[] args) throws EmptyStackException {
@@ -52,7 +52,7 @@ public class TSP {
 			// For each other product
 			for (int j=i+1 ; j<products.size();j++) {
 				// Compute the path from product i to product j, using the code from part 1 (Driver class)
-				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1);
+				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 2, 50, 400, 0.1);
 				// Create the correct CoordinatePair
 				CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 				// Reversed pair because the walking order doesn't matter for size and pheromone
@@ -178,6 +178,8 @@ public class TSP {
 		// This will contain the full minimal route, which will be outputted to file
 		Stack<Coordinate> minRoute = new Stack<Coordinate>();
 		
+		minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(0)));
+		
 		// For each vertex in the minimal path
 		for (int i=1;i<minPathVertices.size();i++) {
 			// Reversed is used to check if the route stack should be read the other way around
@@ -206,12 +208,15 @@ public class TSP {
 				for (int p = 0; p<j; p++) {
 					minRoute.push(reversedPath.pop());
 				}
+				minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(i)));
 			} else {
 				// Add stack to minRoute
 				int j = partRoute.size();
 				for (int p = 0;p<j;p++) {
 					minRoute.push(partRoute.pop());
 				}
+				minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(i)));
+
 			}
 			// Print the path in the correct format
 			Driver.printVisualizerPath(minRoute, products.get(minPathVertices.get(0)).x, products.get(minPathVertices.get(0)).y);	
