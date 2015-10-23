@@ -33,49 +33,70 @@ public class Driver {
 
 	 */
 
-    // Please note that these numbers are probably bullshit, as I have
-    // no idea what half of these things mean
+    // The maximum amount of iterations that the ants will be simulated
     public static final int MAX_ITERATIONS = 10;
+
+    // The number of ants that are simulated
     public static final int NUMBER_OF_ANTS = 100;
+
+    // The amount of pheromone that the ants drop on their route
     public static final float PHEROMONE = 400f;
+
+    // The fraction of pheromone that evaporates every iteration
     public static final double EVAPORATION = 0.1f;
-    public static final double CONVERGENCE_CRITERIA = 1;
+
+    // The amount of steps that an ant needs to take at most for the algorithm to update its output
+    public static int CONVERGENCE_CRITERIA = 2001;
+
     // Starting and ending point variables
     public static final int STARTING_X = 0;
     public static final int STARTING_Y = 0;
     public static final int ENDING_X = 79;
     public static final int ENDING_Y = 79;
+
+    // The name of the maze that should be loaded
     private static final String MAZE_NAME = "hard";
 
     public static void main(String[] args) throws IOException {
+        // Compute a path and print it
         Stack<Coordinate> result = computePath(STARTING_X, STARTING_Y, ENDING_X, ENDING_Y, MAZE_NAME, MAX_ITERATIONS, NUMBER_OF_ANTS, PHEROMONE, EVAPORATION);
         System.out.println("RESULT PRINT NOW");
         System.out.println(result);
-        
-    	
-
     }
-    
+
+    /**
+     * Computes a path using an ant colony optimization algorithm
+     * @param STARTING_X the x coordinate of the ants' starting point
+     * @param STARTING_Y the y coordinate of the ants' starting point
+     * @param ENDING_X the x coordinate of the ants' target point
+     * @param ENDING_Y the y coordinate of the ants' target point
+     * @param MAZE_NAME the name of the maze the ants walk in
+     * @param MAX_ITERATIONS the maximum amount of iterations that the ants are simulated for
+     * @param NUMBER_OF_ANTS the number of ants that is simulated
+     * @param PHEROMONE the amount of pheromone the ants drop on their route
+     * @param EVAPORATION the fraction of pheromone that evaporates every iteration
+     * @return the shortest path that has been found by the ants
+     * @throws EmptyStackException this only happens when serious trouble occurs
+     */
     public static Stack<Coordinate> computePath(int STARTING_X, int STARTING_Y, int ENDING_X, int ENDING_Y, String MAZE_NAME,
     		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION) throws EmptyStackException {
-    	
+
+        // Load the maze from its file
     	MazeParser parser = new MazeParser();
-    	Maze m = null;
+    	Maze m;
     	try {
     		m = parser.parseMaze("mazes/" + MAZE_NAME + "_maze.txt", "mazes/" + MAZE_NAME + "_coordinates.txt");
     	}
-    		
 		catch (IOException e) {
-			System.out.println(e.getStackTrace());
+            e.printStackTrace();
+            return null;
 		}
-        //System.out.println(m.toString());
-
-        
         
         if (ENDING_X > m.size().x ||  ENDING_Y > m.size().y) {
             throw new IllegalArgumentException("Maze ending out of bounds");
         }
 
+        // Create all the ants
         ArrayList<Ant> ants = new ArrayList<>(NUMBER_OF_ANTS);
         for (int i = 0; i < NUMBER_OF_ANTS; i++) {
             ants.add(new Ant(m, Coordinate.get(STARTING_X, STARTING_Y)));
@@ -86,83 +107,44 @@ public class Driver {
         int i;
         Stack<Coordinate> result = new Stack<>();
 
+        // Preload the maze with some pheromone from a single ant to prevent all of the ants from having to find a random
+        // route in the first iteration
         for (i = 0; i < 10; i++) {
             ants.get(0).find(target);
             System.out.println("PRELOAD: " + ants.get(0).spreadPheromone(PHEROMONE));
         }
-        //System.out.println(m);
-        
-        // EDIT THIS FOR OTHER MAZES
-        int absoluteMin = 2001;
 
+        // Simulate the ants
         for (i = 0; i < MAX_ITERATIONS; i++) {
-            ants.parallelStream().forEach(
-                    (Ant ant) -> {
-                        ant.find(target);
-                    }
-            );
+            // Let all ants find the target location
+            ants.parallelStream().forEach(ant -> ant.find(target));
+
             System.out.println("ITER");
+            // Evaporate the correct fraction of the pheromone in the maze
             m.evaporate(EVAPORATION);
-            List<Integer> lens = ants.stream().map(
-                    (Ant ant) -> {
-                        return ant.spreadPheromone(PHEROMONE);
-                    }
-            ).collect(Collectors.toList());
+
+            // Let all ants spread their pheromone, returning the length of their found route.
+            List<Integer> lens = ants.stream().map(ant -> ant.spreadPheromone(PHEROMONE)).collect(Collectors.toList());
+
+            // Print the average route length of all ants
             System.out.println(
                     lens.parallelStream()
                             .reduce(Integer::sum)
                             .get() / lens.size());
-            int min = lens.parallelStream()
-                    .min(Integer::compare)
-                    .get();
-            System.out.println(min);
+
+            // Find the shortest route of this iteration
             result = ants.parallelStream().min((ant, other) -> Integer.compare(ant.getPath().size(), other.getPath().size())).get().getPath();
-            //printPath(m, result);
-            if (min < absoluteMin) {
+            System.out.println(result.size());
+
+            // Check if the route is shorter than the current shortest route.
+            if (result.size() < CONVERGENCE_CRITERIA) {
+                // If so, print the path to a file and set the new shortest route length.
             	printVisualizerPath(m, result, STARTING_X, STARTING_Y);
-            	absoluteMin = min;
+            	CONVERGENCE_CRITERIA = result.size();
             }
-            
-            if (min < 1500) {
-                printPath(m, result);
-            }
-            // Menno: Outcommented the break for tsp.
-            //if (min < 300) break;
-           
-
-           /*if (lens.parallelStream().filter((x) -> x <= Math.abs(ENDING_X - STARTING_X) + Math.abs(ENDING_Y - STARTING_Y) + 10).count() > 0) {
-                System.out.println("FOUND OPTIMUM");
-                break;
-            }*/
-
-            //System.out.println(m);
-        }
-       // System.out.println("CONVERGED IN " + i);
-        for (Coordinate c : result) {
-            //System.out.println(c);
-
         }
         return result;
     	
-    }
-
-    static void printPath(Maze m, Stack<Coordinate> path) {
-        int[][] out = new int[m.size().x][m.size().y];
-
-        for (Coordinate c : path) {
-            out[c.x][c.y] += 1;
-        }
-
-        StringBuilder res = new StringBuilder("");
-
-        for (int[] row : out) {
-            for (int cell : row) {
-                res.append(cell);
-                res.append(' ');
-            }
-            res.append(";\n");
-        }
-        //System.out.println(res.toString());
     }
     
     static void printVisualizerPath(Stack<Coordinate> path, int STARTING_X, int STARTING_Y) {
@@ -170,11 +152,9 @@ public class Driver {
     	try {
     		writer = new PrintWriter(new FileWriter("visualizerOutput2.txt"));
     		
-	    	ArrayList<String> toPrint = new ArrayList<String>();
-	    	toPrint.add(path.size()-1 + ";");
-	    	toPrint.add(STARTING_X + ", " + STARTING_Y + ";");
-//	    	writer.println(path.size()-1 + ";");
-//	    	writer.println(STARTING_X + ", " + STARTING_Y + ";");
+	    	ArrayList<String> outputLines = new ArrayList<>();
+	    	outputLines.add(path.size() - 1 + ";");
+	    	outputLines.add(STARTING_X + ", " + STARTING_Y + ";");
 	    	Coordinate prevCoord = null;
 	    	for (int i = 0;i<path.size();i++) {
 	    		Coordinate coord = path.get(i);
@@ -182,34 +162,28 @@ public class Driver {
 	    			prevCoord = coord;
 	    		} else {
 	    			if (coord.x == prevCoord.x && coord.y == prevCoord.y-1) {
-	    				toPrint.add("1;");
-	    				//writer.println("1;");
+	    				outputLines.add("1;");
 	    			} else if (coord.x == prevCoord.x && coord.y == prevCoord.y+1) {
-	    				toPrint.add("3;");
-	    				//writer.println("3;");
+	    				outputLines.add("3;");
 	    			} else if (coord.x == prevCoord.x-1 && coord.y == prevCoord.y) {
-	    				toPrint.add("2;");
-	    				//writer.println("2;");
+	    				outputLines.add("2;");
 	    			} else if (coord.x == prevCoord.x+1 && coord.y == prevCoord.y) {
-	    				toPrint.add("0;");
-	    				//writer.println("0;");
+	    				outputLines.add("0;");
 	    			} else {
-	    				String sizeString = toPrint.get(0);
+	    				String sizeString = outputLines.get(0);
 	    				String[] splittedSize = sizeString.split(";");
 	    				int size = Integer.parseInt(splittedSize[0]);
 	    				size--;
-	    				toPrint.remove(0);
-	    				toPrint.add(0, size + ";");
+	    				outputLines.remove(0);
+	    				outputLines.add(0, size + ";");
 	    			}
 	    			prevCoord = coord;
 	    		}
 	    		
 	    	}
-	    	for (int i=0;i<toPrint.size();i++) {
-	    		writer.println(toPrint.get(i));
-	    	}
+            outputLines.forEach(writer::println);
     	} catch (IOException e) {
-    		
+    		e.printStackTrace();
     	} finally {
     		if (writer!=null) {
     			writer.close();
@@ -245,7 +219,7 @@ public class Driver {
 	    		
 	    	}
     	} catch (IOException e) {
-    		
+    		e.printStackTrace();
     	} finally {
     		if (writer!=null) {
     			writer.close();

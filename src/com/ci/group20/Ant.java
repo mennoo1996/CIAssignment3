@@ -21,6 +21,7 @@ public class Ant {
     private HashSet<Coordinate> avoid;
     private boolean efficient = false;
 
+    // Remove all loops from the route
     private void makeEfficient() {
         if (!efficient) {
             Stack<Coordinate> route = new Stack<>();
@@ -49,196 +50,108 @@ public class Ant {
         startingPosition = position;
         walkedPath = new Stack<>();
         walkedPath.push(position);
-        movement = new ArrayList<String>();
+        movement = new ArrayList<>();
         avoid = new HashSet<>();
     }
 
+    // Finds a route
     public void find(Coordinate target) throws EmptyStackException {
+        // Reset all variables for the iteration
         efficient = false;
         avoid.clear();
         walkedPath.clear();
-        //System.out.println(startingPosition);
         walkedPath.push(startingPosition);
         final Coordinate mazeSize = maze.size();
         Coordinate[] possibilities = new Coordinate[4];
         double[] accumProbabilities = new double[4];
         double totalPheromone;
 
-        int i = 0;
-       // try {
-	        while (!walkedPath.peek().equals(target)) {
-	        	//System.out.println(walkedPath);
-	        	
-	        	//System.out.println("Size at the start of loop is " + walkedPath.size());
-	        	//System.out.println("INITIATE WHILE");
-	            i++;
-	            Coordinate coordinate = walkedPath.pop();
-                Coordinate prev = null;
-	           
-	            if (!walkedPath.isEmpty()) {
-	                prev = walkedPath.peek();
-	            }
-	            
-	            /**'
-	             * Diego's code, to get out double laying of pheromone when walking circles
-	             */
-	            walkedPath.push(coordinate);
-	
-	            if (coordinate.x - 1 >= 0) {
-	                possibilities[0] = Coordinate.get(coordinate.x - 1, coordinate.y);
-	            } else {
-	                possibilities[0] = null;
-	            }
-	            if (coordinate.x + 1 < mazeSize.x) {
-	                possibilities[1] = Coordinate.get(coordinate.x + 1, coordinate.y);
-	            } else {
-	                possibilities[1] = null;
-	            }
-	            if (coordinate.y - 1 >= 0) {
-	                possibilities[2] = Coordinate.get(coordinate.x, coordinate.y - 1);
-	            } else {
-	                possibilities[2] = null;
-	            }
-	            if (coordinate.y + 1 < mazeSize.y) {
-	                possibilities[3] = Coordinate.get(coordinate.x, coordinate.y + 1);
-	            } else {
-	                possibilities[3] = null;
-	            }
-	
-	            totalPheromone = 0;
-	            for (Coordinate possible : possibilities) {
-	                if (possible != null && !possible.equals(prev) && !avoid.contains(possible)) {
-	                    totalPheromone += Math.max(0, maze.getCellPheromone(possible));
-	                }
-	            }
-	
-	            accumProbabilities[0] = ((possibilities[0] != null && !possibilities[0].equals(prev) && !avoid.contains(possibilities[0])) ? (Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone) : 0);
-	            accumProbabilities[1] = accumProbabilities[0] +
-	                    ((possibilities[1] != null && !possibilities[1].equals(prev) && !avoid.contains(possibilities[1])) ? (Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone) : 0);
-	            accumProbabilities[2] = accumProbabilities[1] +
-	                    ((possibilities[2] != null && !possibilities[2].equals(prev) && !avoid.contains(possibilities[2])) ? (Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone) : 0);
-	            accumProbabilities[3] = accumProbabilities[2] +
-	                    ((possibilities[3] != null && !possibilities[3].equals(prev) && !avoid.contains(possibilities[3])) ? (Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone) : 0);
-	
-	            double prob = random.nextDouble();
-	            int idx;
+        // Keep going until the target has been reached
+        while (!walkedPath.peek().equals(target)) {
+            // Find the previously visited coordinate
+            Coordinate coordinate = walkedPath.pop();
+            Coordinate prev = null;
+            if (!walkedPath.isEmpty()) {
+                prev = walkedPath.peek();
+            }
+            walkedPath.push(coordinate);
 
-                int acc = 0;
-	            for (idx = 0; idx < accumProbabilities.length; idx++) {
-                    if (possibilities[idx] != null && maze.getCellPheromone(possibilities[idx]) >= 0) {
-                        acc++;
-                    }
-	                if (prob < accumProbabilities[idx]) {
-	                    break;
-	                }
-	            }
+            // Determine all accessible adjacent positions
+            if (coordinate.x - 1 >= 0) {
+                possibilities[0] = Coordinate.get(coordinate.x - 1, coordinate.y);
+            } else {
+                possibilities[0] = null;
+            }
+            if (coordinate.x + 1 < mazeSize.x) {
+                possibilities[1] = Coordinate.get(coordinate.x + 1, coordinate.y);
+            } else {
+                possibilities[1] = null;
+            }
+            if (coordinate.y - 1 >= 0) {
+                possibilities[2] = Coordinate.get(coordinate.x, coordinate.y - 1);
+            } else {
+                possibilities[2] = null;
+            }
+            if (coordinate.y + 1 < mazeSize.y) {
+                possibilities[3] = Coordinate.get(coordinate.x, coordinate.y + 1);
+            } else {
+                possibilities[3] = null;
+            }
 
-                if (acc == 1) {
-                    avoid.add(coordinate);
+            // Calculate the total amount of pheromone over all possible positions
+            totalPheromone = 0;
+            for (Coordinate possible : possibilities) {
+                if (possible != null && !possible.equals(prev) && !avoid.contains(possible)) {
+                    totalPheromone += Math.max(0, maze.getCellPheromone(possible));
                 }
-	
-	            if (idx >= possibilities.length || possibilities[idx] == null) {
-	                avoid.add(coordinate);
-	                //System.out.println("POP HERE");
-	                //if (walkedPath.size()>1) {
-	               
-	                	walkedPath.pop();
-	                	if (walkedPath.isEmpty()) {
-	                		walkedPath.push(startingPosition);
-	                	}
-	                
-	                	
-	                	//System.out.println("SIZE AT THIS END IS" + walkedPath.size());
-	               // }
-	                continue;
-	            }
-	
-	            if (idx > 3) {
-	                int v = 1 + 1;
-	            }
-	            
-	            /**
-	             * Diego's code, closes off all openspaces at the left
-	             */
-	            
-	           /* boolean checkdirect = true;
-	            
-	            int spacesahead = 1;
-	            
-	            //System.out.println("Arrived at Diego's code");
-	            
-	            while(checkdirect == true){
-	            	
-	            	switch(idx){
-	            	
-	            	case 0:
-	            		
-	            			if(coordinate.x-spacesahead >= 0 && 
-	            					maze.getCellPheromone(Coordinate.get(coordinate.x-spacesahead, coordinate.y)) >= 0f && 
-	            					!Coordinate.get(Driver.ENDING_X, Driver.ENDING_Y).equals(Coordinate.get(coordinate.x-1, coordinate.y))&&
-	            					UpDownFree(coordinate.x, coordinate.y) >= 0 &&
-	            					UpDownFree(coordinate.x-spacesahead, coordinate.y) >= 0&&
-	            					UpDownFree(coordinate.x-spacesahead -1, coordinate.y) >= 0 &&
-	            					UpDownFree(coordinate.x-spacesahead -1, coordinate.y) == UpDownFree(coordinate.x-spacesahead, coordinate.y) &&
-	            					UpDownFree(coordinate.x, coordinate.y) == UpDownFree(coordinate.x-spacesahead, coordinate.y))
-	            			{
-	            				
-	            			    maze.setCellPheromone(Coordinate.get(coordinate.x-spacesahead, coordinate.y), -1f);   
-	
-	                    		System.out.println("Closed " + Coordinate.get(coordinate.x-spacesahead, coordinate.y));
-	                    		spacesahead++;
-	            			
-	            			}
-	            			else{
-	            				checkdirect = false;
-	            			}
-	            		
-	            			break;
-	            	/*case 1:
-	            		
-	        			if(coordinate.x+spacesahead < maze.size().x && 
-	        					maze.getCellPheromone(Coordinate.get(coordinate.x+spacesahead, coordinate.y)) >= 0f && 
-	        					!Coordinate.get(Driver.ENDING_X, Driver.ENDING_Y).equals(Coordinate.get(coordinate.x+1, coordinate.y))&&
-	        					UpDownFree(coordinate.x, coordinate.y) &&
-	        					UpDownFree(coordinate.x+spacesahead, coordinate.y))
-	        			{
-	        				
-	        			    maze.setCellPheromone(Coordinate.get(coordinate.x+spacesahead, coordinate.y), -1f);   
-	
-	                		System.out.println("Closed " + Coordinate.get(coordinate.x+spacesahead, coordinate.y));
-	                		spacesahead++;
-	        			
-	        			}
-	        			else{
-	        				checkdirect = false;
-	        			}
-	        		
-	        			break;*/
-	            		/*default:
-	            			checkdirect = false;
-	            			break;
-	            	}
-	            	//System.gc();
-	            }*/
-	            //System.out.println("Diego's while-loop break");
-	            
-	            
-	           // System.out.println("PUSH HERE");
-	            //System.out.println(possibilities[idx]);
-	            walkedPath.push(possibilities[idx]);
-	           // System.out.println("WALKEDPATH" + walkedPath);
-	            //System.out.println("EMPTY " + walkedPath.isEmpty());
-	            //System.out.println("Size at the end of loop is " + walkedPath.size());
-	        }
-//        } catch (EmptyStackException e) {
-//        	System.out.println(walkedPath);
-//        	e.printStackTrace();
-//        	System.exit(1);
-//        }
-       // System.gc();
-        //System.out.printf("Found coord in %d iteration\n", i);
+            }
+
+            // Calculate the cumulative probability distribution of all possible positions
+            accumProbabilities[0] = ((possibilities[0] != null && !possibilities[0].equals(prev) && !avoid.contains(possibilities[0])) ? (Math.max(0, maze.getCellPheromone(possibilities[0])) / totalPheromone) : 0);
+            accumProbabilities[1] = accumProbabilities[0] +
+                    ((possibilities[1] != null && !possibilities[1].equals(prev) && !avoid.contains(possibilities[1])) ? (Math.max(0, maze.getCellPheromone(possibilities[1])) / totalPheromone) : 0);
+            accumProbabilities[2] = accumProbabilities[1] +
+                    ((possibilities[2] != null && !possibilities[2].equals(prev) && !avoid.contains(possibilities[2])) ? (Math.max(0, maze.getCellPheromone(possibilities[2])) / totalPheromone) : 0);
+            accumProbabilities[3] = accumProbabilities[2] +
+                    ((possibilities[3] != null && !possibilities[3].equals(prev) && !avoid.contains(possibilities[3])) ? (Math.max(0, maze.getCellPheromone(possibilities[3])) / totalPheromone) : 0);
+
+            // Find a next position in line with the previously calculated probabilities
+            double prob = random.nextDouble();
+            int idx;
+            int acc = 0;
+            for (idx = 0; idx < accumProbabilities.length; idx++) {
+                // Keep track of the amount of positions accessible from this position
+                if (possibilities[idx] != null && maze.getCellPheromone(possibilities[idx]) >= 0) {
+                    acc++;
+                }
+                if (prob < accumProbabilities[idx]) {
+                    break;
+                }
+            }
+
+            // If this position is part of a dead end, avoid it for the rest of the iteration
+            if (acc == 1) {
+                avoid.add(coordinate);
+            }
+
+            // If no new position could be found, go back to the previous position and avoid this one for the rest
+            // of the iteration.
+            if (idx >= possibilities.length || possibilities[idx] == null) {
+                avoid.add(coordinate);
+
+                walkedPath.pop();
+                if (walkedPath.isEmpty()) {
+                    walkedPath.push(startingPosition);
+                }
+                continue;
+            }
+
+            // Add the newly calculated position to the path
+            walkedPath.push(possibilities[idx]);
+        }
     }
 
+    // Spreads pheromone over the walked route proportional to its length
     public int spreadPheromone(float amount) {
         makeEfficient();
         HashSet<Coordinate> cache = new HashSet<>();
@@ -251,38 +164,6 @@ public class Ant {
             }
         }
         return this.walkedPath.size();
-    }
-    
-    
-
-    public int UpDownFree(Coordinate cord){
-    	
-    if(cord.x > 0 && cord.x < maze.size().x){	
-    	if(cord.y-1 > 0 && cord.y+1 < maze.size().y){
-    		
-    		if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) < 0){
-    			
-    			return 0;
-    			
-    		}
-    		else if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) < 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) > 0){
-    			
-    			return 1;
-    			
-    		}
-    		else if(maze.getCellPheromone(Coordinate.get(cord.x, cord.y+1)) > 0 && maze.getCellPheromone(Coordinate.get(cord.x, cord.y-1)) > 0){
-    	
-    			return 2;
-    		}
-    	}
-    }
-    return -1;
-    }
-    
-    public int UpDownFree(int x, int y){
-    	
-    	return UpDownFree(Coordinate.get(x, y));
-    	
     }
 
 }

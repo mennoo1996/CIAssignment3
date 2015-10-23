@@ -5,8 +5,6 @@ import com.ci.group20.util.Coordinate;
 /**
  * A maze.
  */
-
-//Moet geen boolean zijn ivm pheromone
 public class Maze {
     private final float[][] cells;
     private Coordinate start;
