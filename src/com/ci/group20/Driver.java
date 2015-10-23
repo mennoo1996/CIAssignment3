@@ -60,7 +60,7 @@ public class Driver {
 
     public static void main(String[] args) throws IOException {
         // Compute a path and print it
-        Stack<Coordinate> result = computePath(STARTING_X, STARTING_Y, ENDING_X, ENDING_Y, MAZE_NAME, MAX_ITERATIONS, NUMBER_OF_ANTS, PHEROMONE, EVAPORATION);
+        Stack<Coordinate> result = computePath(STARTING_X, STARTING_Y, ENDING_X, ENDING_Y, MAZE_NAME, MAX_ITERATIONS, NUMBER_OF_ANTS, PHEROMONE, EVAPORATION, true);
         System.out.println("RESULT PRINT NOW");
         System.out.println(result);
     }
@@ -80,7 +80,7 @@ public class Driver {
      * @throws EmptyStackException this only happens when serious trouble occurs
      */
     public static Stack<Coordinate> computePath(int STARTING_X, int STARTING_Y, int ENDING_X, int ENDING_Y, String MAZE_NAME,
-    		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION) throws EmptyStackException {
+    		int MAX_ITERATIONS, int NUMBER_OF_ANTS, float PHEROMONE, double EVAPORATION, boolean getStartAndEndFromFile) throws EmptyStackException {
 
         // Load the maze from its file
     	MazeParser parser = new MazeParser();
@@ -92,6 +92,13 @@ public class Driver {
             e.printStackTrace();
             return null;
 		}
+
+        if (getStartAndEndFromFile) {
+            STARTING_X = m.getStart().x;
+            STARTING_Y = m.getStart().y;
+            ENDING_X = m.getEnd().x;
+            ENDING_Y = m.getEnd().y;
+        }
         
         if (ENDING_X > m.size().x ||  ENDING_Y > m.size().y) {
             throw new IllegalArgumentException("Maze ending out of bounds");

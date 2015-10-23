@@ -52,7 +52,7 @@ public class TSP {
 			// For each other product
 			for (int j=i+1 ; j<products.size();j++) {
 				// Compute the path from product i to product j, using the code from part 1 (Driver class)
-				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1);
+				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1, false);
 				// Create the correct CoordinatePair
 				CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 				// Reversed pair because the walking order doesn't matter for size and pheromone
