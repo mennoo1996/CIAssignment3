@@ -33,10 +33,10 @@ public class Driver {
 
     // Starting and ending point variables
     public static final int STARTING_X = 0;
-    public static final int STARTING_Y = 0;
+    public static final int STARTING_Y = 91;
 
-    public static final int ENDING_X = 79;
-    public static final int ENDING_Y = 79;
+    public static final int ENDING_X = 124;
+    public static final int ENDING_Y = 83;
 
     // The name of the maze that should be loaded
     private static final String MAZE_NAME = "hard";

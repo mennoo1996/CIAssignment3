@@ -23,12 +23,22 @@ import com.ci.group20.util.CoordinatePair;
 public class TSP {
 	
 
-	private static final String MAZE = "hard";
-	private static final String PRODUCTS_FILEPATH = "mazes/tsp_products.txt";
+	private static final String MAZE = "world";
+	private static final String PRODUCTS_FILEPATH = "mazes/product_coords.txt";
 	private static final int ANTS = 20000;
 	private static final float EVAPORATION = 0.1f;
 	private static final float BETA = 0.5f;
 	private static final int PHEROMONE_CONSTANT = 30000;
+	
+	private static Stack<Coordinate> begin_to_first;
+	private static Stack<Coordinate> last_to_end;
+	
+	// TODO change
+	private static final int ENDING_X = 124;
+	private static final int ENDING_Y = 83;
+	
+	private static final int STARTING_X = 0;
+	private static final int STARTING_Y = 91;
 
 	
 	public static void main(String[] args) throws EmptyStackException {
@@ -46,13 +56,24 @@ public class TSP {
 		HashMap<CoordinatePair, Integer> route_sizes = new HashMap<CoordinatePair, Integer>();
 		// This will contain the pheromone on each edge between products
 		HashMap<CoordinatePair, Float> pheromone = new HashMap<CoordinatePair, Float>();
+		
+		HashMap<CoordinatePair, Integer> fromStartSizes = new HashMap<CoordinatePair, Integer>();
+		
+		HashMap<CoordinatePair, Integer> fromEndSizes = new HashMap<CoordinatePair, Integer>();
+		
+		HashMap<CoordinatePair, Stack<Coordinate>> fromStartRoutes = new HashMap<CoordinatePair, Stack<Coordinate>>();
+		
+		HashMap<CoordinatePair, Stack<Coordinate>> fromEndRoutes = new HashMap<CoordinatePair, Stack<Coordinate>>();
+
+		
+		
 
 		// For each product
 		for (int i=0;i<products.size();i++) {
 			// For each other product
 			for (int j=i+1 ; j<products.size();j++) {
 				// Compute the path from product i to product j, using the code from part 1 (Driver class)
-				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 10, 100, 400, 0.1, false);
+				Stack<Coordinate> route = Driver.computePath(products.get(i).x, products.get(i).y, products.get(j).x, products.get(j).y, MAZE, 2, 10, 400, 0.1, false);
 				// Create the correct CoordinatePair
 				CoordinatePair pair = new CoordinatePair(products.get(i), products.get(j));
 				// Reversed pair because the walking order doesn't matter for size and pheromone
@@ -67,6 +88,14 @@ public class TSP {
 				pheromone.put(reversedPair, 1.0f);
 			
 			}
+			
+			Stack<Coordinate> route = Driver.computePath(STARTING_X, STARTING_Y, products.get(i).x, products.get(i).y, MAZE, 2, 10, 400, 0.1, false);
+			fromStartRoutes.put(new CoordinatePair(new Coordinate(STARTING_X, STARTING_Y), products.get(i)), route);
+			fromStartSizes.put(new CoordinatePair(new Coordinate(STARTING_X, STARTING_Y), products.get(i)), route.size());
+			
+			route = Driver.computePath(products.get(i).x, products.get(i).y, ENDING_X, ENDING_Y, MAZE, 2, 100, 400, 0.1, false);
+			fromEndRoutes.put(new CoordinatePair(products.get(i), new Coordinate(ENDING_X, ENDING_Y)), route);
+			fromEndSizes.put(new CoordinatePair(products.get(i), new Coordinate(ENDING_X, ENDING_Y)), route.size());
 		}
 		
 		// For each ant
@@ -146,12 +175,19 @@ public class TSP {
 				currentLocation = vertexToGo;
 					
 			}
+			
+			pathLength += fromStartSizes.get(new CoordinatePair(new Coordinate(STARTING_X, STARTING_Y), products.get(path.get(0))));
+			
+			pathLength += fromEndSizes.get(new CoordinatePair(products.get(path.get(path.size()-1)), new Coordinate(ENDING_X, ENDING_Y)));
+			
+			
 			// If this ant has found the shortest path so far
 			if (pathLength<min) {
 				// Update minimal path length
 				min = pathLength;
 				// Update minimal path vertices
 				minPathVertices = path;
+				
 			}
 			
 			// Pheromone evaporation loop: For each product
@@ -178,6 +214,25 @@ public class TSP {
 		// This will contain the full minimal route, which will be outputted to file
 		Stack<Coordinate> minRoute = new Stack<Coordinate>();
 		
+		
+		///////////////////////////////////////////////////////////////////////
+		
+		Stack<Coordinate> begin_to_first = fromStartRoutes.get(new CoordinatePair(new Coordinate(STARTING_X, STARTING_Y), products.get(minPathVertices.get(0))));
+		
+		
+		// Reverse the stack
+		int a = begin_to_first.size();
+		Stack<Coordinate> reversedPath = new Stack<Coordinate>();
+		for (int p = 0 ; p<a ; p++) {
+			reversedPath.push(begin_to_first.pop());
+		}
+		// Add stack to minRoute
+		for (int p = 0; p<a; p++) {
+			minRoute.push(reversedPath.pop());
+		}
+		///////////////////////////////////////////////////////////////////////
+		
+		
 		minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(0)));
 		
 		// For each vertex in the minimal path
@@ -200,7 +255,7 @@ public class TSP {
 			if (!reversed) {
 				// Reverse the stack
 				int j = partRoute.size();
-				Stack<Coordinate> reversedPath = new Stack<Coordinate>();
+				reversedPath = new Stack<Coordinate>();
 				for (int p = 0 ; p<j ; p++) {
 					reversedPath.push(partRoute.pop());
 				}
@@ -218,9 +273,29 @@ public class TSP {
 				minRoute.push(new Coordinate(Integer.MAX_VALUE, minPathVertices.get(i)));
 
 			}
-			// Print the path in the correct format
-			Driver.printVisualizerPath(minRoute, products.get(minPathVertices.get(0)).x, products.get(minPathVertices.get(0)).y);	
 		}
+		
+		////////////////////////////////////////////////////////////
+		Stack<Coordinate> last_to_end = fromEndRoutes.get(new CoordinatePair(products.get(minPathVertices.get(minPathVertices.size()-1)), new Coordinate(ENDING_X, ENDING_Y)));
+		
+		// Reverse the stack
+		int j = last_to_end.size();
+		reversedPath = new Stack<Coordinate>();
+		for (int p = 0 ; p<j ; p++) {
+			reversedPath.push(last_to_end.pop());
+		}
+		// Add stack to minRoute
+		for (int p = 0; p<j; p++) {
+			minRoute.push(reversedPath.pop());
+		}
+		
+		/////////////////////////////////////////////////////////////
+		
+		
+		
+		// Print the path in the correct format
+		Driver.printVisualizerPath(minRoute, STARTING_X, STARTING_Y);	
+
 		
 		
 		
